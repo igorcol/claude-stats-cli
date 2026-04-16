@@ -3,43 +3,52 @@ import { ClaudeUsage } from "./api";
 import { COLORS, getStatusColor } from "./utils/theme";
 import { buildBar, formatRelativeTime, computePace } from "./utils/formatters";
 
-
 export function renderHUD(usage: ClaudeUsage): void {
   const sP = usage.five_hour.utilization;
   const wP = usage.seven_day.utilization;
-
   const { targetAllocation, pacePercent, slack, todayUsagePercent } = computePace(
     wP,
     usage.seven_day.resets_at,
   );
 
-  console.clear();
-  console.log(`\n${COLORS.BOLD}${COLORS.CYAN} CLAUDE OPERATIONAL STATUS${COLORS.RESET}`);
-  console.log(`${COLORS.GRAY} --------------------------${COLORS.RESET}`);
-
-  // Bloco 1: Sessão Ativa (Curto Prazo)
-  console.log(`\n [ SESSÃO ATIVA ]`);
-  console.log(` ${buildBar(sP, getStatusColor(sP))}`);
-  console.log(` ${COLORS.GRAY}Resets in: ${formatRelativeTime(usage.five_hour.resets_at)}${COLORS.RESET}`);
-
-  // Bloco 2: O Balde de Hoje (Médio Prazo) - A NOVIDADE
-  console.log(`\n [ COMBUSTÍVEL DE HOJE ]`);
-  console.log(` ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))}`);
+  const sessionReset = formatRelativeTime(usage.five_hour.resets_at);
+  const weeklyReset = formatRelativeTime(usage.seven_day.resets_at);
   const remainingToday = Math.max(0, 100 - todayUsagePercent);
-  console.log(` ${COLORS.GRAY}Você ainda tem ${remainingToday.toFixed(1)}% do orçamento de hoje${COLORS.RESET}`);
 
-  // Bloco 3: Semanal (Longo Prazo)
-  console.log(`\n [ SEMANAL ]`);
-  console.log(` ${buildBar(wP, getStatusColor(wP))}`);
+  console.clear();
+  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┎──────────────────────────────────────────────────────────┒${COLORS.RESET}`);
+  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┃                CLAUDE OPERATIONAL STATUS                 ┃${COLORS.RESET}`);
+  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┖──────────────────────────────────────────────────────────┚${COLORS.RESET}`);
+
+  // --- CURTO PRAZO ---
+  console.log(`\n ${COLORS.BOLD}${COLORS.WHITE}[ CURTO PRAZO: CONSUMO IMEDIATO ]${COLORS.RESET}`);
   
-  // Bloco 4: Daily Pace (Estratégico)
-  console.log(`\n [ DAILY PACE (Burn Rate) ]`);
-  console.log(` ${buildBar(pacePercent, getStatusColor(pacePercent))}`);
+  // SESSÃO: Removi a % extra daqui
+  console.log(`  SESSÃO (5H)  ${buildBar(sP, getStatusColor(sP))}`);
+  console.log(`               ${COLORS.GRAY}↳ Próximo reset: ${COLORS.CYAN}${sessionReset}${COLORS.RESET}\n`);
 
-  const slackStr = slack >= 0
-      ? `${COLORS.GREEN}+${slack.toFixed(1)}% de folga${COLORS.RESET}`
-      : `${COLORS.RED}${slack.toFixed(1)}% de overburn${COLORS.RESET}`;
+  // HOJE: Removi a % extra daqui
+  const todayColor = todayUsagePercent > 100 ? COLORS.RED : COLORS.GREEN;
+  console.log(`  HOJE (COT)   ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))}`);
+  console.log(`               ${COLORS.GRAY}↳ Disponível: ${todayColor}${remainingToday.toFixed(1)}%${COLORS.GRAY} do balde diário${COLORS.RESET}`);
 
-  console.log(` ${COLORS.GRAY}Alvo Ideal: ${targetAllocation.toFixed(1)}% | Usado: ${wP.toFixed(1)}% | ${slackStr}`);
-  console.log(`\n${COLORS.GRAY} --------------------------${COLORS.RESET}\n`);
+  console.log(`\n ${COLORS.GRAY}────────────────────────────────────────────────────────────${COLORS.RESET}`);
+
+  // --- LONGO PRAZO ---
+  console.log(`\n ${COLORS.BOLD}${COLORS.WHITE}[ LONGO PRAZO: SAÚDE DA CONTA ]${COLORS.RESET}`);
+
+  // SEMANAL: Removi a % extra daqui e dei destaque no Reset Semanal
+  console.log(`  SEMANAL      ${buildBar(wP, getStatusColor(wP))}`);
+  console.log(`               ${COLORS.BOLD}${COLORS.GRAY}↳ CICLO ENCERRA EM: ${weeklyReset}${COLORS.RESET}\n`);
+
+  // PACE: O Oráculo do Ritmo
+  const paceLabel = pacePercent > 100 ? "OVERBURN" : "STABLE";
+  const slackColor = slack >= 0 ? COLORS.GREEN : COLORS.RED;
+  
+  console.log(`  PACE (RITMO) ${buildBar(pacePercent, getStatusColor(pacePercent))} ${COLORS.BOLD}[${paceLabel}]${COLORS.RESET}`);
+  
+  // STATS (Rodapé preciso)
+  console.log(`\n  ${COLORS.BOLD}DETALHES:${COLORS.RESET}  Alvo: ${targetAllocation.toFixed(1)}%  |  Uso: ${wP.toFixed(1)}%  |  Folga: ${slackColor}${slack.toFixed(1)}%${COLORS.RESET}`);
+
+  console.log(`\n ${COLORS.CYAN}────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
 }

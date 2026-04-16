@@ -4,9 +4,10 @@ export const COLORS = {
   CYAN: "\x1b[36m",
   GREEN: "\x1b[32m",
   YELLOW: "\x1b[33m",
-  ORANGE: "\x1b[38;5;208m", // ANSI 256 para Laranja
+  ORANGE: "\x1b[38;5;208m", 
   RED: "\x1b[31m",
   GRAY: "\x1b[90m",
+  WHITE: "\x1b[37m",       
   BOLD: "\x1b[1m",
   RESET: "\x1b[0m",
 };
