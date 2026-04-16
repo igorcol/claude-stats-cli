@@ -1,4 +1,5 @@
-// src/ui.ts
+
+
 import { ClaudeUsage } from "./api";
 import { COLORS, getStatusColor } from "./utils/theme";
 import { buildBar, formatRelativeTime, computePace } from "./utils/formatters";
@@ -16,39 +17,36 @@ export function renderHUD(usage: ClaudeUsage): void {
   const remainingToday = Math.max(0, 100 - todayUsagePercent);
 
   console.clear();
-  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┎──────────────────────────────────────────────────────────┒${COLORS.RESET}`);
-  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┃                CLAUDE OPERATIONAL STATUS                 ┃${COLORS.RESET}`);
-  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┖──────────────────────────────────────────────────────────┚${COLORS.RESET}`);
+  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┎────────────────────────────────────────────────────────────────────────┒${COLORS.RESET}`);
+  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┃                    CLAUDE OPERATIONAL TELEMETRY                    ┃${COLORS.RESET}`);
+  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┖────────────────────────────────────────────────────────────────────────┚${COLORS.RESET}`);
 
-  // --- CURTO PRAZO ---
-  console.log(`\n ${COLORS.BOLD}${COLORS.WHITE}[ CURTO PRAZO: CONSUMO IMEDIATO ]${COLORS.RESET}`);
+  // --- SEÇÃO 1: ACIONÁVEL / CURTO PRAZO (Urgente) ---
+  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┌[ STATUS DE SESSÃO IMEDIATA ]${COLORS.RESET}`);
   
-  // SESSÃO: Removi a % extra daqui
-  console.log(`  SESSÃO (5H)  ${buildBar(sP, getStatusColor(sP))}`);
-  console.log(`               ${COLORS.GRAY}↳ Próximo reset: ${COLORS.CYAN}${sessionReset}${COLORS.RESET}\n`);
+  // SESSÃO
+  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}SESSÃO (5H)${COLORS.RESET} ${buildBar(sP, getStatusColor(sP))} ${COLORS.GRAY}Next:${COLORS.RESET} ${COLORS.CYAN_BOLD}${sessionReset}${COLORS.RESET}`);
 
-  // HOJE: Removi a % extra daqui
-  const todayColor = todayUsagePercent > 100 ? COLORS.RED : COLORS.GREEN;
-  console.log(`  HOJE (COT)   ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))}`);
-  console.log(`               ${COLORS.GRAY}↳ Disponível: ${todayColor}${remainingToday.toFixed(1)}%${COLORS.GRAY} do balde diário${COLORS.RESET}`);
-
-  console.log(`\n ${COLORS.GRAY}────────────────────────────────────────────────────────────${COLORS.RESET}`);
-
-  // --- LONGO PRAZO ---
-  console.log(`\n ${COLORS.BOLD}${COLORS.WHITE}[ LONGO PRAZO: SAÚDE DA CONTA ]${COLORS.RESET}`);
-
-  // SEMANAL: Removi a % extra daqui e dei destaque no Reset Semanal
-  console.log(`  SEMANAL      ${buildBar(wP, getStatusColor(wP))}`);
-  console.log(`               ${COLORS.BOLD}${COLORS.GRAY}↳ CICLO ENCERRA EM: ${weeklyReset}${COLORS.RESET}\n`);
-
-  // PACE: O Oráculo do Ritmo
-  const paceLabel = pacePercent > 100 ? "OVERBURN" : "STABLE";
-  const slackColor = slack >= 0 ? COLORS.GREEN : COLORS.RED;
+  // HOJE
+  const todayColor = todayUsagePercent > 100 ? COLORS.RED_BOLD : COLORS.GREEN_BOLD;
+  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}HOJE   (COT)${COLORS.RESET} ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))} ${COLORS.GRAY}Livre:${COLORS.RESET} ${todayColor}${remainingToday.toFixed(1)}% do balde${COLORS.RESET}`);
   
-  console.log(`  PACE (RITMO) ${buildBar(pacePercent, getStatusColor(pacePercent))} ${COLORS.BOLD}[${paceLabel}]${COLORS.RESET}`);
-  
-  // STATS (Rodapé preciso)
-  console.log(`\n  ${COLORS.BOLD}DETALHES:${COLORS.RESET}  Alvo: ${targetAllocation.toFixed(1)}%  |  Uso: ${wP.toFixed(1)}%  |  Folga: ${slackColor}${slack.toFixed(1)}%${COLORS.RESET}`);
+  console.log(` ${COLORS.CYAN}└───────────────────────────────${COLORS.RESET}`);
 
-  console.log(`\n ${COLORS.CYAN}────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
+  // --- SEÇÃO 2: ESTRATÉGICO / SAÚDE DA CONTA (O Oráculo) ---
+  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┌[ SAÚDE E RITMO DA CONTA ]${COLORS.RESET}`);
+
+  // SEMANAL
+  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}SEMANAL (W)${COLORS.RESET} ${buildBar(wP, getStatusColor(wP))} ${COLORS.GRAY}RESET EM:${COLORS.RESET} ${COLORS.BOLD}${COLORS.YELLOW}${weeklyReset}${COLORS.RESET}`);
+
+  // RITMO (Pace)
+  const paceLabelColor = pacePercent > 100 ? COLORS.RED_BOLD : COLORS.GREEN_BOLD;
+  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}RITMO (PACE)${COLORS.RESET} ${buildBar(pacePercent, getStatusColor(pacePercent))} ${COLORS.GRAY}Status:${COLORS.RESET} ${paceLabelColor}[${pacePercent > 100 ? "OVERBURN" : "STABLE"}]${COLORS.RESET}`);
+
+  // DETALHES TÉCNICOS (O rodapé de dados puros)
+  const slackColor = slack >= 0 ? COLORS.GREEN_BOLD : COLORS.RED_BOLD;
+  const detailsLine = `${COLORS.BOLD}${COLORS.GRAY}DADOS TÉCNICOS ::${COLORS.RESET} Alvo: ${COLORS.WHITE_BOLD}${targetAllocation.toFixed(1)}%${COLORS.RESET} | Uso: ${COLORS.WHITE_BOLD}${wP.toFixed(1)}%${COLORS.RESET} | Folga Semanal: ${slackColor}${slack.toFixed(1)}%${COLORS.RESET}`;
+  
+  console.log(`  │\n  │ ${detailsLine}`);
+  console.log(` ${COLORS.CYAN}└────────────────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
 }
