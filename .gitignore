@@ -1,0 +1,9 @@
+# Dependências
+node_modules/
+
+# Credenciais e Cofres Locais (NUNCA SUBIR)
+claude_config.json
+
+# Logs e arquivos de sistema
+npm-debug.log
+.DS_Store
