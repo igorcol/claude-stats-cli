@@ -42,7 +42,7 @@ export function computePace(wP: number, resetAt: string | null) {
   const startTime = resetTime - totalCycleMs; 
   const now = Date.now();
   
-  const RESET_HOUR = 1; // Horario de reset
+  const RESET_HOUR = 4; // Horario de reset
 
   const anchorDate = new Date(startTime);
   anchorDate.setHours(RESET_HOUR, 0, 0, 0);
