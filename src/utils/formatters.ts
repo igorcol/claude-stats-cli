@@ -35,35 +35,40 @@ export function formatRelativeTime(isoString: string | null): string {
 }
 
 export function computePace(wP: number, resetAt: string | null) {
-  if (!resetAt) return { targetAllocation: 0, pacePercent: 0, slack: 0 };
+  if (!resetAt) return { targetAllocation: 0, pacePercent: 0, slack: 0, todayUsagePercent: 0 };
   
   const totalCycleMs = 7 * 24 * 60 * 60 * 1000;
   const resetTime = new Date(resetAt).getTime();
   const startTime = resetTime - totalCycleMs; 
   const now = Date.now();
   
-  // --------- HORA DE RESET  ---------
-  const RESET_HOUR = 1;  // 4 DA MANHÃ
-  // ----------------------------------
+  const RESET_HOUR = 4; // Horario de reset
 
-  // Encontra a "Âncora": o horário de reset (ex: 04:00) no dia que a semana começou
   const anchorDate = new Date(startTime);
   anchorDate.setHours(RESET_HOUR, 0, 0, 0);
   const anchorTime = anchorDate.getTime();
 
-  // Quantos períodos de 24h se passaram desde a primeira "âncora" da semana?
   const diffMs = now - anchorTime;
   const elapsedDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
-  
-  // currentDay: se diff < 24h, é o Dia 1. Se diff > 24h, é Dia 2, etc.
-  // Soma +1 porque o orçamento do primeiro dia já está disponível no minuto 1.
   const currentDay = Math.max(1, Math.min(7, elapsedDays + 1));
 
-  const dailyAllowance = 100 / 7;
+  const dailyAllowance = 100 / 7; // ~14.28%
   const targetAllocation = dailyAllowance * currentDay;
+  const yesterdayTarget = dailyAllowance * (currentDay - 1);
   
+  // --- LÓGICA DO BALDE DE HOJE ---
+  // Quanto você usou além do que era permitido até ontem?
+  const usedTodayRaw = Math.max(0, wP - yesterdayTarget);
+  // Qual a porcentagem disso em relação ao balde de hoje (14.28%)?
+  const todayUsagePercent = (usedTodayRaw / dailyAllowance) * 100;
+
   const pacePercent = targetAllocation > 0 ? (wP / targetAllocation) * 100 : 0;
   const slack = targetAllocation - wP;
   
-  return { targetAllocation, pacePercent, slack };
+  return { 
+    targetAllocation, 
+    pacePercent, 
+    slack, 
+    todayUsagePercent 
+  };
 }
