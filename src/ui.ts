@@ -25,6 +25,7 @@ export function renderHUD(usage: ClaudeUsage): void {
   console.log(
     ` ${COLORS.GRAY}Resets in: ${formatRelativeTime(usage.five_hour.resets_at)}${COLORS.RESET}`,
   );
+  
 
   // Bloco 7 Dias
   console.log(`\n [ SEMANAL ]`);
@@ -32,6 +33,7 @@ export function renderHUD(usage: ClaudeUsage): void {
   console.log(
     ` ${COLORS.GRAY}Resets in: ${formatRelativeTime(usage.seven_day.resets_at)}${COLORS.RESET}`,
   );
+  
 
   // Novo Bloco: Ritmo Diário Projetado
   console.log(`\n [ DAILY PACE (Burn Rate) ]`);

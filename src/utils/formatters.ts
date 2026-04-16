@@ -14,13 +14,15 @@ export function buildBar(percent: number, color: string): string {
 
 // Converte Data ISO para Delta Time Inteligente (Relativo)
 export function formatRelativeTime(isoString: string | null): string {
-  if (!isoString) return "N/A";
+  // Se não houver data de reset, significa que o uso está zerado/disponível
+  if (!isoString) return "[ Aguardando primeira interação ]";
 
   const targetTime = new Date(isoString).getTime();
   const now = Date.now();
   const diffMs = targetTime - now;
 
-  if (diffMs <= 0) return "Agora";
+  // Se a data já passou, mas a API ainda não atualizou para null
+  if (diffMs <= 0) return "Ready";
 
   const totalMins = Math.floor(diffMs / 60000);
   const days = Math.floor(totalMins / 1440);
