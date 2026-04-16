@@ -35,3 +35,22 @@ A arquitetura usa o padrão *Vault & Engine*, mantendo sua chave segura fora do 
 git clone [https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git](https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git)
 cd SEU_REPOSITORIO
 npm install
+```
+
+### 2. O Cofre de Segurança
+Crie um arquivo chamado `claude_config.json` na raiz do projeto (não se preocupe, o `.gitignore` o protegerá) e insira sua chave extraída dos cookies do navegador (`F12 > Application > Cookies > sessionKey`):
+```json
+{
+  "sessionKey": "sk-ant-sua-chave-aqui"
+}
+```
+
+### 3. Integração Global (Windows)
+    1. Coloque a pasta do projeto no seu PATH de Variáveis de Ambiente.
+    2. Certifique-se de que o arquivo stats.bat contido na raiz possui a diretriz de chamada para o motor TSX.
+
+### 4. Execução
+No seu CMD, PowerShell, terminal do VS Code ou pelo Win + R, digite:
+```bash
+stats
+```
