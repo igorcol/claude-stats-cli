@@ -1,5 +1,4 @@
-
-
+// src/ui.ts
 import { ClaudeUsage } from "./api";
 import { COLORS, getStatusColor } from "./utils/theme";
 import { buildBar, formatRelativeTime, computePace } from "./utils/formatters";
@@ -7,46 +6,41 @@ import { buildBar, formatRelativeTime, computePace } from "./utils/formatters";
 export function renderHUD(usage: ClaudeUsage): void {
   const sP = usage.five_hour.utilization;
   const wP = usage.seven_day.utilization;
-  const { targetAllocation, pacePercent, slack, todayUsagePercent } = computePace(
-    wP,
-    usage.seven_day.resets_at,
-  );
+  const { targetAllocation, pacePercent, slack, todayUsagePercent } = computePace(wP, usage.seven_day.resets_at);
 
-  const sessionReset = formatRelativeTime(usage.five_hour.resets_at);
-  const weeklyReset = formatRelativeTime(usage.seven_day.resets_at);
-  const remainingToday = Math.max(0, 100 - todayUsagePercent);
+  const sReset = formatRelativeTime(usage.five_hour.resets_at);
+  const wReset = formatRelativeTime(usage.seven_day.resets_at);
 
   console.clear();
-  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┎────────────────────────────────────────────────────────────────────────┒${COLORS.RESET}`);
-  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┃                    CLAUDE OPERATIONAL TELEMETRY                    ┃${COLORS.RESET}`);
-  console.log(` ${COLORS.BOLD}${COLORS.CYAN}┖────────────────────────────────────────────────────────────────────────┚${COLORS.RESET}`);
-
-  // --- SEÇÃO 1: ACIONÁVEL / CURTO PRAZO (Urgente) ---
-  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┌[ STATUS DE SESSÃO IMEDIATA ]${COLORS.RESET}`);
   
-  // SESSÃO
-  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}SESSÃO (5H)${COLORS.RESET} ${buildBar(sP, getStatusColor(sP))} ${COLORS.GRAY}Next:${COLORS.RESET} ${COLORS.CYAN_BOLD}${sessionReset}${COLORS.RESET}`);
+  // HEADER MINIMALISTA
+  console.log(`\n ${COLORS.BG_CYAN}${COLORS.BLACK}${COLORS.BLACK} CLAUDE TELEMETRY SYSTEM ${COLORS.RESET} ${COLORS.CYAN}v2.0.0${COLORS.RESET}`);
+  console.log(` ${COLORS.GRAY}Rooted Session Analysis | Sorocaba, SP${COLORS.RESET}\n`);
 
-  // HOJE
-  const todayColor = todayUsagePercent > 100 ? COLORS.RED_BOLD : COLORS.GREEN_BOLD;
-  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}HOJE   (COT)${COLORS.RESET} ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))} ${COLORS.GRAY}Livre:${COLORS.RESET} ${todayColor}${remainingToday.toFixed(1)}% do balde${COLORS.RESET}`);
+  // --- BLOCO 1: O AGORA (Sessão & Hoje) ---
+  const todayStatus = todayUsagePercent > 100 ? " OVERBURN " : " STABLE ";
+  const todayBG = todayUsagePercent > 100 ? COLORS.BG_RED : COLORS.BG_GREEN;
+
+  console.log(` ${COLORS.BOLD}${COLORS.WHITE}⚡ CARGA ATUAL [ Diário ]${COLORS.RESET}`);
+  console.log(` ${COLORS.GRAY}SESSION${RESET_SPACE(2)} ${buildBar(sP, getStatusColor(sP))} ${COLORS.BOLD}${sP.toFixed(1)}%${COLORS.RESET} ${COLORS.GRAY}[Next: ${sReset}]${COLORS.RESET}`);
+  console.log(` ${COLORS.GRAY}DAILY  ${RESET_SPACE(2)} ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))} ${todayBG}${COLORS.BLACK}${COLORS.BOLD}${todayStatus}${COLORS.RESET} ${todayUsagePercent.toFixed(1)}%`);
+
+  console.log(`\n ${COLORS.GRAY}──────────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
+
+  // --- BLOCO 2: A SEMANA (Global & Pace) ---
+  const paceBG = pacePercent > 100 ? COLORS.BG_RED : COLORS.BG_YELLOW;
   
-  console.log(` ${COLORS.CYAN}└───────────────────────────────${COLORS.RESET}`);
+  console.log(` ${COLORS.BOLD}${COLORS.WHITE}📅 SAÚDE DA SEMANA${COLORS.RESET}`);
+  console.log(` ${COLORS.GRAY}WEEKLY ${RESET_SPACE(2)} ${buildBar(wP, getStatusColor(wP))} ${COLORS.BOLD}${wP.toFixed(1)}%${COLORS.RESET}`);
+  console.log(` ${COLORS.GRAY}PACE   ${RESET_SPACE(2)} ${buildBar(pacePercent, getStatusColor(pacePercent))} ${paceBG}${COLORS.BLACK}${COLORS.BOLD} RITMO ${COLORS.RESET} ${pacePercent.toFixed(1)}%`);
 
-  // --- SEÇÃO 2: ESTRATÉGICO / SAÚDE DA CONTA (O Oráculo) ---
-  console.log(`\n ${COLORS.BOLD}${COLORS.CYAN}┌[ SAÚDE E RITMO DA CONTA ]${COLORS.RESET}`);
-
-  // SEMANAL
-  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}SEMANAL (W)${COLORS.RESET} ${buildBar(wP, getStatusColor(wP))} ${COLORS.GRAY}RESET EM:${COLORS.RESET} ${COLORS.BOLD}${COLORS.YELLOW}${weeklyReset}${COLORS.RESET}`);
-
-  // RITMO (Pace)
-  const paceLabelColor = pacePercent > 100 ? COLORS.RED_BOLD : COLORS.GREEN_BOLD;
-  console.log(`  │ ${COLORS.BOLD}${COLORS.GRAY}RITMO (PACE)${COLORS.RESET} ${buildBar(pacePercent, getStatusColor(pacePercent))} ${COLORS.GRAY}Status:${COLORS.RESET} ${paceLabelColor}[${pacePercent > 100 ? "OVERBURN" : "STABLE"}]${COLORS.RESET}`);
-
-  // DETALHES TÉCNICOS (O rodapé de dados puros)
-  const slackColor = slack >= 0 ? COLORS.GREEN_BOLD : COLORS.RED_BOLD;
-  const detailsLine = `${COLORS.BOLD}${COLORS.GRAY}DADOS TÉCNICOS ::${COLORS.RESET} Alvo: ${COLORS.WHITE_BOLD}${targetAllocation.toFixed(1)}%${COLORS.RESET} | Uso: ${COLORS.WHITE_BOLD}${wP.toFixed(1)}%${COLORS.RESET} | Folga Semanal: ${slackColor}${slack.toFixed(1)}%${COLORS.RESET}`;
+  // --- BLOCO 3: DEADLINES & DATA (O que importa de verdade) ---
+  console.log(`\n ${COLORS.BG_YELLOW}${COLORS.BLACK}${COLORS.BLACK} WEEKLY DEADLINE ${COLORS.RESET} ${COLORS.BOLD}${COLORS.YELLOW} ${wReset} até o reset semanal. ${COLORS.RESET}`);
   
-  console.log(`  │\n  │ ${detailsLine}`);
-  console.log(` ${COLORS.CYAN}└────────────────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
+  const slackColor = slack >= 0 ? COLORS.GREEN : COLORS.RED;
+  console.log(` ${COLORS.GRAY}Target: ${targetAllocation.toFixed(1)}% | Current: ${wP.toFixed(1)}% | ${COLORS.RESET}${slackColor}${COLORS.BOLD}Folga: ${slack.toFixed(1)}%${COLORS.RESET}`);
+  console.log("");
 }
+
+// Helper simples para alinhar texto
+function RESET_SPACE(n: number) { return " ".repeat(n); }
