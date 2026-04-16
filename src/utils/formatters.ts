@@ -36,33 +36,34 @@ export function formatRelativeTime(isoString: string | null): string {
 
 export function computePace(wP: number, resetAt: string | null) {
   if (!resetAt) return { targetAllocation: 0, pacePercent: 0, slack: 0 };
-
+  
   const totalCycleMs = 7 * 24 * 60 * 60 * 1000;
   const resetTime = new Date(resetAt).getTime();
+  const startTime = resetTime - totalCycleMs; 
   const now = Date.now();
+  
+  // --------- HORA DE RESET  ---------
+  const RESET_HOUR = 4;  // 4 DA MANHÃ
+  // ----------------------------------
 
-  let remainingMs = Math.max(0, resetTime - now);
-  if (remainingMs > totalCycleMs) remainingMs = totalCycleMs;
+  // Encontra a "Âncora": o horário de reset (ex: 04:00) no dia que a semana começou
+  const anchorDate = new Date(startTime);
+  anchorDate.setHours(RESET_HOUR, 0, 0, 0);
+  const anchorTime = anchorDate.getTime();
 
-  // 1. Tempo Decorrido em Milissegundos
-  const elapsedMs = totalCycleMs - remainingMs;
+  // Quantos períodos de 24h se passaram desde a primeira "âncora" da semana?
+  const diffMs = now - anchorTime;
+  const elapsedDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
+  
+  // currentDay: se diff < 24h, é o Dia 1. Se diff > 24h, é Dia 2, etc.
+  // Soma +1 porque o orçamento do primeiro dia já está disponível no minuto 1.
+  const currentDay = Math.max(1, Math.min(7, elapsedDays + 1));
 
-  // 2. Converte para Dias Decimais (ex: 34h = 1.41 dias)
-  const elapsedDaysExact = elapsedMs / (24 * 60 * 60 * 1000);
-
-  // 3. Arredonda para cima para destravar o "Chunk" do dia atual (1.41 vira Dia 2)
-  // Math.max e min garantem que o dia nunca seja menor que 1 ou maior que 7
-  const currentDay = Math.max(1, Math.min(7, Math.ceil(elapsedDaysExact)));
-
-  // 4. O Alvo Ideal (14.28% por dia)
   const dailyAllowance = 100 / 7;
   const targetAllocation = dailyAllowance * currentDay;
-
-  // Ritmo de Queima (Burn Rate)
+  
   const pacePercent = targetAllocation > 0 ? (wP / targetAllocation) * 100 : 0;
-
-  // Folga vs Overburn
   const slack = targetAllocation - wP;
-
+  
   return { targetAllocation, pacePercent, slack };
 }
