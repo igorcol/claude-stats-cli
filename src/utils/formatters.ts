@@ -43,7 +43,7 @@ export function computePace(wP: number, resetAt: string | null) {
   const now = Date.now();
   
   // --------- HORA DE RESET  ---------
-  const RESET_HOUR = 4;  // 4 DA MANHÃ
+  const RESET_HOUR = 1;  // 4 DA MANHÃ
   // ----------------------------------
 
   // Encontra a "Âncora": o horário de reset (ex: 04:00) no dia que a semana começou
