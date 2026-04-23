@@ -9,7 +9,7 @@ export async function handleCliCommands(): Promise<boolean> {
 
   for (const cmd of COMMANDS) {
     // Verifica se algum argumento bate com as flags do comando
-    const match = args.find(arg => cmd.flags.includes(arg));
+    const match = args.find((arg: string) => cmd.flags.includes(arg));
     
     if (match) {
       await cmd.action();

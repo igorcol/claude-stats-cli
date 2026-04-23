@@ -73,7 +73,7 @@ export async function runWizard(configPath: string): Promise<Config> {
 
       rl.close(); // Fecha o input ANTES de retornar
       return config;
-    } catch (err) {
+    } catch (err: any) {
       // Agora o catch realmente funciona!
       process.stdout.write(`\r${" ".repeat(60)}\r`); // Limpa o "Validando..."
 
