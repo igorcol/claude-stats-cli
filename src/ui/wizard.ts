@@ -12,6 +12,7 @@ export async function runWizard(configPath: string): Promise<Config> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
+    terminal: true
   });
 
   console.clear();
