@@ -1,4 +1,4 @@
-// Tipagem
+// src/api.ts
 export interface UsageWindow {
   utilization: number;
   resets_at: string;
@@ -19,44 +19,32 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
     Origin: "https://claude.ai",
   };
 
-  try {
-    // ------- Busca a Org ID -------
-    const orgsRes = await fetch("https://claude.ai/api/organizations", {
-      headers,
-    });
+  // ------- Busca a Org ID -------
+  const orgsRes = await fetch("https://claude.ai/api/organizations", { headers });
 
-    if (!orgsRes.ok) {
-      throw new Error(
-        `Falha no Auth/Cloudflare (Orgs). Status: ${orgsRes.status}`,
-      );
-    }
-
-    const orgs = await orgsRes.json();
-    const targetOrg = orgs.find((org: { capabilities: string | string[]; }) =>
-      org.capabilities.includes("claude_pro"),
-    );
-
-    if (!targetOrg) {
-      throw new Error("Organização 'claude_pro' não encontrada na sua conta.");
-    }
-
-    // ------- Busca USAGE -------
-    const usageRes = await fetch(
-      `https://claude.ai/api/organizations/${targetOrg.uuid}/usage`,
-      { headers },
-    );
-
-    if (!usageRes.ok) {
-      throw new Error(
-        `Falha no Cloudflare (Usage). Status: ${usageRes.status}`,
-      );
-    }
-
-    const usageData = (await usageRes.json()) as ClaudeUsage;
-    return usageData;
-  } catch (error) {
-    console.error("\x1b[31m[!] ERRO DE REDE OU AUTENTICAÇÃO:\x1b[0m");
-    console.error(error instanceof Error ? error.message : error);
-    process.exit(1);
+  if (!orgsRes.ok) {
+    throw new Error(`Falha no Auth (Orgs). Status: ${orgsRes.status}`);
   }
+
+  const orgs = await orgsRes.json();
+  const targetOrg = orgs.find((org: any) =>
+    org.capabilities.includes("claude_pro")
+  );
+
+  if (!targetOrg) {
+    throw new Error("Organização 'claude_pro' não encontrada.");
+  }
+
+  // ------- Busca USAGE -------
+  const usageRes = await fetch(
+    `https://claude.ai/api/organizations/${targetOrg.uuid}/usage`,
+    { headers }
+  );
+
+  if (!usageRes.ok) {
+    throw new Error(`Falha no Usage. Status: ${usageRes.status}`);
+  }
+
+  return (await usageRes.json()) as ClaudeUsage;
+  // try/catch removido para que o erro suba para o Setup ou Index.
 }

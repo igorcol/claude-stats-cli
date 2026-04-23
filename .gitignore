@@ -13,3 +13,5 @@ claude_config.json
 # Logs e arquivos de sistema
 npm-debug.log*
 .DS_Store
+
+temp.md
