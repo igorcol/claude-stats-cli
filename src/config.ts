@@ -1,39 +1,21 @@
-import fs from "node:fs";
-import path from "node:path";
+// src/config.ts
+import fs from "fs";
+import path from "path";
+import os from "os";
+import { runWizard, Config } from "./setup";
 
-// Tipagem
-export interface ClaudeConfig {
-  sessionKey: string;
-}
+const CONFIG_PATH = path.join(os.homedir(), ".claude_stats_config.json");
 
-export function loadConfig(): ClaudeConfig {
-  // cfg path
-  const configPath = path.resolve(__dirname, "../claude_config.json");
-
-  if (!fs.existsSync(configPath)) {
-    console.error(
-      `\x1b[31m[!] ERRO CRÍTICO: Config não encontrada em ${configPath}\x1b[0m`,
-    );
-    process.exit(1); // Encerra a execução
+export async function loadConfig(): Promise<Config> {
+  if (!fs.existsSync(CONFIG_PATH)) {
+    return await runWizard(CONFIG_PATH);
   }
 
   try {
-    const rawData = fs.readFileSync(configPath, "utf-8");
-    const config = JSON.parse(rawData);
-
-    if (!config.sessionKey) {
-      console.error(
-        '\x1b[31m[!] ERRO CRÍTICO: "sessionKey" ausente no JSON.\x1b[0m',
-      );
-      process.exit(1);
-    }
-
-    return { sessionKey: config.sessionKey };
+    const fileContent = fs.readFileSync(CONFIG_PATH, "utf-8");
+    return JSON.parse(fileContent);
   } catch (error) {
-    console.error(
-      "\x1b[31m[!] ERRO CRÍTICO: Falha ao ler ou fazer parse do claude_config.json\x1b[0m",
-      error,
-    );
-    process.exit(1);
+    // Se o JSON estiver corrompido, dispara o setup de novo
+    return await runWizard(CONFIG_PATH);
   }
 }

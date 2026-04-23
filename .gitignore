@@ -1,9 +1,15 @@
 # Dependências
 node_modules/
 
-# Credenciais e Cofres Locais (NUNCA SUBIR)
+# Build artifacts (TypeScript output)
+dist/
+build/
+
+# Configurações sensíveis (Suas chaves pessoais)
 claude_config.json
+.claude_stats_config.json
+.env
 
 # Logs e arquivos de sistema
-npm-debug.log
+npm-debug.log*
 .DS_Store

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { getClaudeUsage } from './api';
 import { loadConfig } from './config';
 import { renderHUD } from './ui';
@@ -7,7 +8,7 @@ import { COLORS } from './utils/theme';
 const REFRESH_INTERVAL = 60 * 1000; 
 
 async function bootstrap() {
-    const config = loadConfig();
+    const config = await loadConfig();
     
     console.log(`${COLORS.CYAN}[i] Iniciando Telemetria...${COLORS.RESET}`);
 

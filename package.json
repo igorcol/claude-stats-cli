@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "stats": "./dist/index.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "reset": "node -e \"const fs = require('fs'); const path = require('path'); const os = require('os'); const p = path.join(os.homedir(), '.claude_stats_config.json'); if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('🗑️ Config deletada!'); } else { console.log('❓ Config não encontrada.'); }\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
