@@ -1,5 +1,5 @@
 # ⚡ CLAUDE OPERATIONAL HUD 
-![Version](https://img.shields.io/badge/version-1.0.0--beta.1-magenta?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.0.0--beta.2-magenta?style=for-the-badge)
 [![Changelog](https://img.shields.io/badge/What's_New%3F-Click_Here-00f2ff?style=for-the-badge)](./CHANGELOG.md)
 
 > **Do passageiro ao gestor.** Pare de ser limitado pela Anthropic e comece a gerenciar seu orçamento de inteligência em tempo real.
