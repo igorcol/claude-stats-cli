@@ -1,6 +1,6 @@
+claude_config.json
 node_modules/
 src/
 tsconfig.json
 .gitignore
-claude_config.json
 # Deixar a pasta /dist/ e o package.json
