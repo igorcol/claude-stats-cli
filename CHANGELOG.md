@@ -21,10 +21,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Refatoração do fluxo de dados: agora o script localiza o UUID da organização `claude_pro` de forma dinâmica.
 - Persistência de dados: migração do `claude_config.json` local para um arquivo de configuração global no diretório home do usuário.
 
-### Known Issues (Working on for v1.0.0 Gold)
-- **Flag --reset:** A rotina de limpeza de cache e arquivos de configuração local ainda apresenta inconsistências em alguns ambientes.
-- **Telemetry Loop:** O intervalo de auto-rescan de 60 segundos está em fase de recalibração para evitar rate-limiting excessivo.
-- **Update Log:** A formatação visual do aviso de nova versão no HUD precisa de ajustes de alinhamento em terminais de baixa resolução.
+### Known Issues (Working on for v1.0.0)
+- **Flag --reset:** A rotina de limpeza de cache e arquivos de configuração local não possui implementação funcional.
+- **Telemetry Loop:** O intervalo de auto-rescan de 60 segundos ainda não funciona.
+- **Update Log:** Disponibilizar o changelod da versão atual através da flag --changelog ou --updates.
 
 ---
 **Desenvolvido por Igor Colombini**
