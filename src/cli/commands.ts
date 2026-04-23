@@ -1,31 +1,33 @@
 // src/cli/commands.ts
-import fs from "fs";
-import { CONFIG_PATH } from "../core/config";
+import { CLI_COMPONENTS } from "../ui/components";
+import { CliCommand } from "./types";
 import { COLORS } from "../utils/theme";
-import { UI_COMPONENTS } from "../ui/components";
 
-export const CLI_COMMANDS = {
-  showVersion: () => {
-    console.log(`${COLORS.CYAN}Claude Telemetry v1.4.0${COLORS.RESET}`);
+export const COMMANDS: CliCommand[] = [
+  {
+    flags: ["-v", "--version"],
+    description: "Exibe a versão atual",
+    exitAfterExecution: true,
+    action: () => console.log(`${COLORS.CYAN}Claude Telemetry v1.4.1${COLORS.RESET}`)
   },
-
-  showHelp: () => {
-    console.log(UI_COMPONENTS.header("CLAUDE TELEMETRY - HELP", false));
-    console.log(`\n ${COLORS.WHITE_BOLD}Uso:${COLORS.RESET} stats [flags]\n`);
-    console.log(` ${COLORS.CYAN}-s, --setup${COLORS.RESET}    Força a reconfiguração da sessionKey`);
-    console.log(` ${COLORS.CYAN}-o, --once${COLORS.RESET}     Executa um scan único e encerra`);
-    console.log(` ${COLORS.CYAN}-r, --reset${COLORS.RESET}    Remove o arquivo de configuração atual`);
-    console.log(` ${COLORS.CYAN}-v, --version${COLORS.RESET}  Exibe a versão atual`);
-    console.log(` ${COLORS.CYAN}-h, --help${COLORS.RESET}     Exibe esta tela de ajuda`);
-    console.log(UI_COMPONENTS.divider());
+  {
+    flags: ["-r", "--reset"],
+    description: "Remove o arquivo de configuração atual",
+    exitAfterExecution: true,
+    action: () => resetConfig()
   },
-
-  resetConfig: () => {
-    if (fs.existsSync(CONFIG_PATH)) {
-      fs.unlinkSync(CONFIG_PATH);
-      console.log(`${COLORS.GREEN}✔ Configuração removida com sucesso.${COLORS.RESET}`);
-    } else {
-      console.log(`${COLORS.GRAY}[i] Nenhuma configuração encontrada para remover.${COLORS.RESET}`);
+  {
+    flags: ["-h", "--help"],
+    description: "Exibe esta tela de ajuda",
+    exitAfterExecution: true,
+    action: () => {
+       // O help agora pode ser gerado automaticamente lendo este mesmo array!
+       console.log(`${COLORS.BOLD}${COLORS.CYAN} CLAUDE STATS - HELP ${COLORS.RESET}\n`);
+       COMMANDS.forEach(cmd => {
+         console.log(` ${COLORS.YELLOW}${cmd.flags.join(", ")}${COLORS.RESET}\t${cmd.description}`);
+       });
+       console.log("\n");
     }
   }
-};
+  // Se quiser a flag --setup, basta adicionar o objeto aqui!
+];

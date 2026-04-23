@@ -1,24 +1,18 @@
 #!/usr/bin/env node
-import { parseArgs } from "./cli/args";
-import { CLI_COMMANDS } from "./cli/commands";
-import { loadConfig, forceSetup } from "./core/config"; // Vamos ajustar o config.ts
+import { handleCliCommands } from "./cli/router";
+import { loadConfig } from "./core/config";
 import { startTelemetry, runSingleScan } from "./core/telemetry";
 
 async function bootstrap() {
-  const args = parseArgs();
-
-  // Flags Prioritárias (Morrem após execução)
-  if (args.help) return CLI_COMMANDS.showHelp();
-  if (args.version) return CLI_COMMANDS.showVersion();
-  if (args.reset) return CLI_COMMANDS.resetConfig();
+  // Router para resolver flags estáticas (--help, --version, --reset)
+  await handleCliCommands();
 
   try {
-    // Lógica de Config/Setup
-    // Se a flag --setup estiver presente, forçamos o wizard
-    const config = args.setup ? await forceSetup() : await loadConfig();
+    // Se o script não morreu no router, seguimos para a lógica de negócio
+    const config = await loadConfig();
 
-    // Modos de Execução
-    if (args.once) {
+    // Checagem manual para o --once (que não é uma flag de saída)
+    if (process.argv.includes("--once") || process.argv.includes("-o")) {
       await runSingleScan(config.sessionKey);
     } else {
       await startTelemetry(config.sessionKey);
