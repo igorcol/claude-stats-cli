@@ -1,5 +1,4 @@
 // src/cli/commands.ts
-import { CLI_COMPONENTS } from "../ui/components";
 import { CliCommand } from "./types";
 import { APP_VERSION, COLORS } from "../utils/theme";
 import { forceSetup } from "../core/config";
@@ -19,7 +18,7 @@ export const COMMANDS: CliCommand[] = [
     flags: ["-r", "--reset"],
     description: "Remove o arquivo de configuração atual",
     exitAfterExecution: true,
-    action: () => resetConfig(),
+    action: () => console.log('ResetConfig not implemented.') //resetConfig(),
   },
 
   //* --HELP
