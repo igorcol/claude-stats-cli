@@ -1,6 +1,14 @@
-claude_config.json
-node_modules/
+# Código fonte e configs de dev
 src/
 tsconfig.json
-.gitignore
-# Deixar a pasta /dist/ e o package.json
+.vscode/
+temp.md
+
+# Arquivos sensíveis (O QUE VAZOU ANTES!)
+claude_config.json
+temp.md
+.env
+
+# Logs e Cache
+node_modules/
+npm-debug.log
