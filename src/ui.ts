@@ -11,36 +11,38 @@ export function renderHUD(usage: ClaudeUsage): void {
   const sReset = formatRelativeTime(usage.five_hour.resets_at);
   const wReset = formatRelativeTime(usage.seven_day.resets_at);
 
+  const isOverburn = pacePercent > 100 || sP > 90;
+  const headerBG = isOverburn ? COLORS.BG_RED : COLORS.BG_CYAN;
+  const statusIcon = isOverburn ? "🚨" : "💎";
+  
   console.clear();
   
-  // HEADER MINIMALISTA
-  console.log(`\n ${COLORS.BG_CYAN}${COLORS.BLACK}${COLORS.BLACK} CLAUDE TELEMETRY SYSTEM ${COLORS.RESET} ${COLORS.CYAN}v2.0.0${COLORS.RESET}`);
-  console.log(` ${COLORS.GRAY}Rooted Session Analysis | Sorocaba, SP${COLORS.RESET}\n`);
+  // HEADER
+  console.log(`\n ${headerBG}${COLORS.BLACK}${COLORS.BOLD}  ${statusIcon} CLAUDE OPERATIONAL TELEMETRY v1.3.1  ${COLORS.RESET}`);
+  console.log(` ${COLORS.GRAY} Modo: ${isOverburn ? "HIGH RISK / OVERBURN" : "OPTIMAL / STABLE"}${COLORS.RESET}\n`);
 
-  // --- BLOCO 1: O AGORA (Sessão & Hoje) ---
-  const todayStatus = todayUsagePercent > 100 ? " OVERBURN " : " STABLE ";
-  const todayBG = todayUsagePercent > 100 ? COLORS.BG_RED : COLORS.BG_GREEN;
+  // --- CARGA ATUAL ---
+  console.log(` ${COLORS.WHITE_BOLD}⚡ CARGA ATUAL${COLORS.RESET}`);
+  
+  console.log(`  SESSÃO (5H) ${buildBar(sP, getStatusColor(sP))} ${COLORS.GRAY}│ Reset: ${COLORS.CYAN}${sReset}${COLORS.RESET}`);
 
-  console.log(` ${COLORS.BOLD}${COLORS.WHITE}⚡ CARGA ATUAL [ Diário ]${COLORS.RESET}`);
-  console.log(` ${COLORS.GRAY}SESSION${RESET_SPACE(2)} ${buildBar(sP, getStatusColor(sP))} ${COLORS.RESET} ${COLORS.GRAY}[Next: ${sReset}]${COLORS.RESET}`);
-  console.log(` ${COLORS.GRAY}DAILY  ${RESET_SPACE(2)} ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))} ${todayBG}${COLORS.BLACK}${COLORS.BOLD}${todayStatus}${COLORS.RESET}`);
+  const debt = Math.max(0, todayUsagePercent - 100);
+  const dailyLabel = debt > 0 ? `${COLORS.RED}DÍVIDA: -${debt.toFixed(1)}%${COLORS.RESET}` : `${COLORS.GREEN}LIVRE: ${(100 - todayUsagePercent).toFixed(1)}%${COLORS.RESET}`;
+  console.log(`  DIÁRIO (COT) ${buildBar(todayUsagePercent, getStatusColor(todayUsagePercent))} ${COLORS.GRAY}│ ${dailyLabel}${COLORS.RESET}`);
 
   console.log(`\n ${COLORS.GRAY}──────────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
 
-  // --- BLOCO 2: A SEMANA (Global & Pace) ---
-  const paceBG = pacePercent > 100 ? COLORS.BG_RED : COLORS.BG_YELLOW;
+  // --- SAÚDE DO CICLO ---
+  console.log(` ${COLORS.WHITE_BOLD}📅 SAÚDE DO CICLO${COLORS.RESET}`);
   
-  console.log(` ${COLORS.BOLD}${COLORS.WHITE}📅 SAÚDE DA SEMANA${COLORS.RESET}`);
-  console.log(` ${COLORS.GRAY}WEEKLY ${RESET_SPACE(2)} ${buildBar(wP, getStatusColor(wP))} ${COLORS.RESET}`);
-  console.log(` ${COLORS.GRAY}PACE   ${RESET_SPACE(2)} ${buildBar(pacePercent, getStatusColor(pacePercent))} ${paceBG}${COLORS.BLACK}${COLORS.BOLD} RITMO ${COLORS.RESET} `);
+  console.log(`  TOTAL (W)   ${buildBar(wP, getStatusColor(wP))}`);
+  
+  const paceStatus = pacePercent > 100 ? `${COLORS.BG_RED}${COLORS.BLACK} OVERBURN ${COLORS.RESET}` : `${COLORS.BG_GREEN}${COLORS.BLACK} STABLE ${COLORS.RESET}`;
+  console.log(`  RITMO (P)   ${buildBar(pacePercent, getStatusColor(pacePercent))} ${paceStatus}`);
 
-  // --- BLOCO 3: DEADLINES & DATA (O que importa de verdade) ---
-  console.log(`\n ${COLORS.BG_YELLOW}${COLORS.BLACK}${COLORS.BLACK} WEEKLY DEADLINE ${COLORS.RESET} ${COLORS.BOLD}${COLORS.YELLOW} ${wReset} até o reset semanal. ${COLORS.RESET}`);
+  // --- RODAPÉ ---
+  console.log(`\n ${COLORS.BG_YELLOW}${COLORS.BLACK}${COLORS.BOLD} NEXT GLOBAL RESET ${COLORS.RESET} ${COLORS.BOLD}${COLORS.YELLOW} ${wReset}${COLORS.RESET}`);
   
   const slackColor = slack >= 0 ? COLORS.GREEN : COLORS.RED;
-  console.log(` ${COLORS.GRAY}Teto: ${targetAllocation.toFixed(1)}% | Current: ${wP.toFixed(1)}% | ${COLORS.RESET}${slackColor}${COLORS.BOLD}Folga: ${slack.toFixed(1)}%${COLORS.RESET}`);
-  console.log("");
+  console.log(` ${COLORS.GRAY}Ideal: ${targetAllocation.toFixed(1)}% │ Real: ${wP.toFixed(1)}% │ ${COLORS.RESET}${slackColor}${COLORS.BOLD}Folga: ${slack.toFixed(1)}%${COLORS.RESET}`);
 }
-
-// Helper simples para alinhar texto
-function RESET_SPACE(n: number) { return " ".repeat(n); }
