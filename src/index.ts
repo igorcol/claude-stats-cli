@@ -1,13 +1,29 @@
 #!/usr/bin/env node
-import { loadConfig } from "./core/config";
-import { startTelemetry } from "./core/telemetry";
+import { parseArgs } from "./cli/args";
+import { CLI_COMMANDS } from "./cli/commands";
+import { loadConfig, forceSetup } from "./core/config"; // Vamos ajustar o config.ts
+import { startTelemetry, runSingleScan } from "./core/telemetry";
 
 async function bootstrap() {
+  const args = parseArgs();
+
+  // Flags Prioritárias (Morrem após execução)
+  if (args.help) return CLI_COMMANDS.showHelp();
+  if (args.version) return CLI_COMMANDS.showVersion();
+  if (args.reset) return CLI_COMMANDS.resetConfig();
+
   try {
-    const config = await loadConfig();
-    await startTelemetry(config.sessionKey);
+    // Lógica de Config/Setup
+    // Se a flag --setup estiver presente, forçamos o wizard
+    const config = args.setup ? await forceSetup() : await loadConfig();
+
+    // Modos de Execução
+    if (args.once) {
+      await runSingleScan(config.sessionKey);
+    } else {
+      await startTelemetry(config.sessionKey);
+    }
   } catch (error) {
-    console.error("\n [!] Erro fatal no bootstrap.");
     process.exit(1);
   }
 }

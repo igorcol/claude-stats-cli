@@ -27,3 +27,14 @@ export async function startTelemetry(sessionKey: string) {
     await new Promise((resolve) => setTimeout(resolve, REFRESH_INTERVAL));
   }
 }
+
+export async function runSingleScan(sessionKey: string) {
+  try {
+    const usage = await getClaudeUsage(sessionKey);
+    renderHUD(usage);
+    console.log(`\n ${COLORS.GRAY}Scan único finalizado.${COLORS.RESET}\n`);
+  } catch (error) {
+    console.error(`\n ${COLORS.RED}[!] Erro no scan único: ${error instanceof Error ? error.message : error}${COLORS.RESET}`);
+    process.exit(1);
+  }
+}
