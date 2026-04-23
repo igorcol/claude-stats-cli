@@ -1,56 +1,80 @@
-# ⚡ Claude Operational HUD
+# ⚡ CLAUDE OPERATIONAL HUD (v1.0.0)
 
-> Um painel de telemetria brutalista via CLI para monitorar o uso de tokens da sua conta Claude Pro em tempo real, direto do terminal, com latência zero.
-
----
-
-## 🎯 A Ideia
-Uma ferramenta de linha de comando (CLI) escrita em TypeScript que extrai, processa e renderiza seus dados de consumo da Anthropic em uma interface visual colorida, TDAH-friendly e impossível de ignorar. Você digita um comando de 5 letras e sabe exatamente o quão rápido pode trabalhar nas próximas horas.
-
-## 🩸 O Porquê (O Gargalo)
-O processo padrão para verificar seu limite no Claude é quebrado: exige abrir o navegador, trocar de aba, clicar no perfil e tentar interpretar uma interface limitante. 
-
-Este sistema foi criado para resolver três problemas:
-1. **Velocidade de Acesso:** Substituir 15 segundos de cliques por 1 segundo de terminal. Foco mantido.
-2. **Redução de Carga Cognitiva:** Barras de progresso com formatação condicional (Verde > Amarelo > Vermelho). Você bate o olho e sente o "nível de perigo" de bloqueio.
-3. **Visão de Raio-X (Hidden Data):** A UI web do Claude mascara dados úteis. Esta API extrai a "Single Source of Truth", mostrando as porcentagens exatas em decimais, os timestamps literais de reset e, futuramente, métricas não publicadas na interface padrão da Anthropic.
+> **Do passageiro ao gestor.** Pare de ser limitado pela Anthropic e comece a gerenciar seu orçamento de inteligência em tempo real.
 
 ---
 
-## ⚙️ Como Funciona (O Fluxo de Dados)
+## 🧠 A Filosofia: Gerenciamento de Orçamento de Produtividade
 
-A arquitetura usa o padrão *Vault & Engine*, mantendo sua chave segura fora do código-fonte e conectando-se diretamente aos servidores internos.
+O processo padrão de uso do Claude é reativo: você trabalha até receber o aviso de que "seu limite acaba em 2 horas". Isso interrompe o fluxo, quebra o raciocínio e gera estresse de entrega.
 
-1. **Leitura de Cofre:** O script injeta a sua `sessionKey` a partir do `claude_config.json` (ignorado no Git por segurança).
-2. **Org Discovery:** Envia um *fetch* autenticado para `https://claude.ai/api/organizations` e localiza dinamicamente o ID (UUID) da sua conta associada à *capability* `claude_pro`.
-3. **Usage Fetch:** Com o UUID em mãos, consulta a rota interna `/usage`, extraindo os objetos JSON de `five_hour` e `seven_day`.
-4. **Renderização:** O motor visual formata as datas ISO para o seu *timezone* local, calcula as larguras matemáticas da barra de progresso (0-100%) e cospe os resultados via códigos ANSI no terminal.
+O **Claude Operational HUD** inverte essa lógica. Ele transforma o limite abstrato da Anthropic em um **recurso alocável**. Através da métrica exclusiva de **COT (Cota Diária)**, você deixa de ser um passageiro dos resets semanais para se tornar o gestor do seu próprio fluxo de trabalho. Se você está dentro da cota diária, você tem a garantia de combustível para a semana toda.
+
+## 🩸 Por que usar o HUD?
+
+1. **Visão de Cockpit:** Interface neobrutalista pensada para estado de alerta e foco. Bateu o olho, entendeu o consumo.
+2. **Métrica COT (Daily Quota):** O HUD divide seu limite semanal por 7, criando um orçamento diário. Mantenha-se no verde e nunca mais seja bloqueado na quinta-feira.
+3. **Latência Zero:** Sem abas de navegador, sem cliques. Um comando de 5 letras no terminal e você tem a "Single Source of Truth".
+4. **Resiliência Nativa:** Sistema de telemetria com rescan automático a cada 60 segundos e recuperação automática de sessão.
 
 ---
 
-## 🚀 Setup & Instalação
+## 🛠️ Engenharia e Funcionalidades
 
-### 1. Clonar e Configurar
+O HUD v1.0.0 não é apenas um script de visualização, é um motor resiliente construído em TypeScript:
+
+* **Command Registry:** Arquitetura modular para flags de comando (Standard POSIX).
+* **Auto-Recovery:** Detecção inteligente de erro 403. Se sua chave expirar, o HUD pausa e oferece o setup na hora.
+* **Graceful Shutdown:** Encerramento limpo de processos, respeitando os sinais do sistema (sem erros de memória no Windows).
+* **Update Checker:** Antena assíncrona que avisa sobre novas versões sem atrasar a inicialização.
+* **Health Score:** Cálculos decimais de porcentagem e timestamps literais de reset.
+
+---
+
+## 🚀 Instalação e Setup Rápido
+
+### 1. Preparação
 ```bash
-git clone [https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git](https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git)
-cd SEU_REPOSITORIO
+git clone https://github.com/igorcol/claude-stats-cli.git
+cd claude-stats-cli
 npm install
+npm run build
+npm link
 ```
 
-### 2. O Cofre de Segurança
-Crie um arquivo chamado `claude_config.json` na raiz do projeto (não se preocupe, o `.gitignore` o protegerá) e insira sua chave extraída dos cookies do navegador (`F12 > Application > Cookies > sessionKey`):
-```json
-{
-  "sessionKey": "sk-ant-sua-chave-aqui"
-}
-```
-
-### 3. Integração Global (Windows)
-    1. Coloque a pasta do projeto no seu PATH de Variáveis de Ambiente.
-    2. Certifique-se de que o arquivo stats.bat contido na raiz possui a diretriz de chamada para o motor TSX.
-
-### 4. Execução
-No seu CMD, PowerShell, terminal do VS Code ou pelo Win + R, digite:
+### 2. Primeiro Acesso (Wizard)
+Diferente das versões anteriores, você não precisa editar arquivos JSON manualmente. Basta rodar:
 ```bash
-stats
+stats --setup
 ```
+
+O Wizard irá validar sua `sessionKey` em tempo real e configurar seu ambiente de forma segura.
+
+---
+
+## 🎮 Comandos Disponíveis
+
+O HUD utiliza um motor de triagem de comandos profissional:
+
+| Comando | Descrição |
+| :--- | :--- |
+| `stats` | Inicia a telemetria em tempo real (Loop de 60s). |
+| `stats --once` | Realiza um scan único e encerra (ideal para logs rápidos). |
+| `stats --setup` | Força a reconfiguração da chave de acesso. |
+| `stats --reset` | Remove as configurações locais do sistema. |
+| `stats --version` | Exibe a versão atual da engine. |
+| `stats --help` | Mostra a central de ajuda. |
+
+---
+
+## 🎨 Estética Disruptiva
+O design foi projetado para ser **TDAH-friendly** e **High-Contrast**. O uso de Neon sobre Dark Mode não é apenas estético; é funcional para destacar métricas críticas de "Overburn" (excesso de uso) instantaneamente, permitindo uma tomada de decisão rápida sobre qual tarefa priorizar.
+
+---
+
+## 🛡️ Segurança e Privacidade
+Sua `sessionKey` nunca sai da sua máquina. O HUD comunica-se exclusivamente com os endpoints oficiais da Anthropic e armazena suas credenciais localmente em um "cofre" (arquivo de configuração) no diretório home do usuário (`~/.claude_stats_config.json`).
+
+---
+
+**Desenvolvido por Igor Colombini**
