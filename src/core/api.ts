@@ -20,15 +20,18 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
   };
 
   // ------- Busca a Org ID -------
-  const orgsRes = await fetch("https://claude.ai/api/organizations", { headers });
+  const orgsRes = await fetch("https://claude.ai/api/organizations", {
+    headers,
+  });
 
   if (!orgsRes.ok) {
-    throw new Error(`Falha no Auth (Orgs). Status: ${orgsRes.status}`);
+    // Mensagem padronizada para o Telemetry
+    throw new Error(`AUTH_EXPIRED:${orgsRes.status}`);
   }
 
   const orgs = await orgsRes.json();
   const targetOrg = orgs.find((org: any) =>
-    org.capabilities.includes("claude_pro")
+    org.capabilities.includes("claude_pro"),
   );
 
   if (!targetOrg) {
@@ -38,7 +41,7 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
   // ------- Busca USAGE -------
   const usageRes = await fetch(
     `https://claude.ai/api/organizations/${targetOrg.uuid}/usage`,
-    { headers }
+    { headers },
   );
 
   if (!usageRes.ok) {
