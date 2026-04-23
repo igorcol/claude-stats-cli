@@ -2,7 +2,8 @@
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { runWizard, Config } from "./setup";
+import { Config, runWizard } from "../ui/wizard";
+
 
 const CONFIG_PATH = path.join(os.homedir(), ".claude_stats_config.json");
 

@@ -1,8 +1,8 @@
 // src/setup.ts
 import fs from "fs";
 import readline from "readline/promises";
-import { COLORS } from "./utils/theme";
-import { getClaudeUsage } from "./api";
+import { COLORS } from "../utils/theme";
+import { getClaudeUsage } from "../core/api"; 
 
 export interface Config {
   sessionKey: string;
