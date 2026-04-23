@@ -4,18 +4,24 @@ import { renderHUD } from "../ui/dashboard";
 import { COLORS } from "../utils/theme";
 import { forceSetup } from "./config"; // Precisamos disso para o auto-recovery
 import readline from "readline/promises";
+import { checkForUpdates } from "./updates";
 
 const REFRESH_INTERVAL = 60 * 1000;
 
 export async function startTelemetry(initialKey: string) {
   let currentKey = initialKey;
+  let updateAvailable: string | null = null;
+
+  checkForUpdates().then(version => {
+    updateAvailable = version;
+  });
   
   console.log(`${COLORS.CYAN}[i] Iniciando Telemetria...${COLORS.RESET}`);
 
   while (true) {
     try {
       const usage = await getClaudeUsage(currentKey);
-      renderHUD(usage);
+      renderHUD(usage, updateAvailable);
 
       const now = new Date().toLocaleTimeString("pt-BR");
       console.log(`\n ${COLORS.GRAY}Ultima atualização: ${now} (Próxima em ${REFRESH_INTERVAL / 1000}s)${COLORS.RESET}`);

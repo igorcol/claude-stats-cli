@@ -1,10 +1,10 @@
 // src/ui/dashboard.ts
 import { ClaudeUsage } from "../core/api";
-import { COLORS, getStatusColor } from "../utils/theme";
+import { APP_VERSION, COLORS, getStatusColor } from "../utils/theme";
 import { buildBar, formatRelativeTime, computePace } from "../utils/formatters";
 import { UI_COMPONENTS } from "./components";
 
-export function renderHUD(usage: ClaudeUsage): void {
+export function renderHUD(usage: ClaudeUsage, newVersion: string | null = null): void {
   const sP = usage.five_hour.utilization;
   const wP = usage.seven_day.utilization;
   const { targetAllocation, pacePercent, slack, todayUsagePercent } = computePace(wP, usage.seven_day.resets_at);
@@ -15,8 +15,15 @@ export function renderHUD(usage: ClaudeUsage): void {
   const isOverburn = pacePercent > 100 || sP > 90;
   
   console.clear();
+
+  // Banner de Update (se houver nova versão)
+  if (newVersion) {
+    console.log(` ${COLORS.BG_MAGENTA}${COLORS.BLACK}${COLORS.BOLD} ✨ UPDATE DISPONÍVEL: v${newVersion} ${COLORS.RESET}`);
+    console.log(` ${COLORS.MAGENTA}└─> Rode: npm install -g @seu-user/claude-stats${COLORS.RESET}\n`);
+  }
+
+  console.log(UI_COMPONENTS.header(`CLAUDE OPERATIONAL TELEMETRY v${APP_VERSION}`, isOverburn));
   
-  console.log(UI_COMPONENTS.header("CLAUDE OPERATIONAL TELEMETRY v1.4.0", isOverburn));
   console.log(` ${UI_COMPONENTS.subLabel(`Modo: ${isOverburn ? "HIGH RISK / OVERBURN" : "OPTIMAL / STABLE"}`)}\n`);
 
   console.log(` ${UI_COMPONENTS.label("⚡ CARGA ATUAL")}`);

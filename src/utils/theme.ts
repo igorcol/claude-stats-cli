@@ -1,4 +1,7 @@
 // src/utils/theme.ts
+import packageJson from "../../package.json"
+
+export const APP_VERSION = packageJson.version;
 
 export const COLORS = {
   CYAN: "\x1b[36m",
@@ -9,7 +12,9 @@ export const COLORS = {
   ORANGE: "\x1b[38;5;208m",
   RED: "\x1b[31m",
   RED_BOLD: "\x1b[1;31m",
-  GRAY: "\x1b[37m",      
+  MAGENTA: "\x1b[35m",          
+  MAGENTA_BOLD: "\x1b[1;35m",   
+  GRAY: "\x1b[37m",       
   WHITE: "\x1b[37m",
   WHITE_BOLD: "\x1b[1;37m",
   BLACK: "\x1b[30m",
@@ -18,6 +23,7 @@ export const COLORS = {
   BG_RED: "\x1b[41m",
   BG_GREEN: "\x1b[42m",
   BG_YELLOW: "\x1b[43m",
+  BG_MAGENTA: "\x1b[45m",       
   
   BOLD: "\x1b[1m",
   RESET: "\x1b[0m",
