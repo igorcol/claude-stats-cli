@@ -1,4 +1,4 @@
-# ⚡ CLAUDE OPERATIONAL HUD (v1.0.0)
+# ⚡ CLAUDE OPERATIONAL HUD (v1.0.0-beta.1)
 
 > **Do passageiro ao gestor.** Pare de ser limitado pela Anthropic e comece a gerenciar seu orçamento de inteligência em tempo real.
 
