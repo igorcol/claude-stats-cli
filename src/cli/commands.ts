@@ -2,20 +2,27 @@
 import { CLI_COMPONENTS } from "../ui/components";
 import { CliCommand } from "./types";
 import { COLORS } from "../utils/theme";
+import { forceSetup } from "../core/config";
 
 export const COMMANDS: CliCommand[] = [
+
+  // * --VERSION
   {
     flags: ["-v", "--version"],
     description: "Exibe a versão atual",
     exitAfterExecution: true,
     action: () => console.log(`${COLORS.CYAN}Claude Telemetry v1.4.1${COLORS.RESET}`)
   },
+
+  // * --RESET
   {
     flags: ["-r", "--reset"],
     description: "Remove o arquivo de configuração atual",
     exitAfterExecution: true,
     action: () => resetConfig()
   },
+
+  //* --HELP
   {
     flags: ["-h", "--help"],
     description: "Exibe esta tela de ajuda",
@@ -28,6 +35,15 @@ export const COMMANDS: CliCommand[] = [
        });
        console.log("\n");
     }
+  },
+
+  // * -- SETUP 
+  {
+    flags: ["-s", "--setup"], // ? SE TODAS TEM - ou --, não posso só deixar aqui com ["s", "setup"] ??
+    description: "Força a reconfiguração da sessionKey",
+    exitAfterExecution: false,
+    action: async () => {
+      await forceSetup();
+    }
   }
-  // Se quiser a flag --setup, basta adicionar o objeto aqui!
 ];
