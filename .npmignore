@@ -2,7 +2,7 @@
 src/
 tsconfig.json
 .vscode/
-temp.md
+TODO.md
 
 # Arquivos sensíveis (O QUE VAZOU ANTES!)
 claude_config.json
