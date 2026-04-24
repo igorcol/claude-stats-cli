@@ -82,6 +82,8 @@ export async function runWizard(configPath: string): Promise<Config> {
         ` ${COLORS.GRAY} Verifique se a sessionKey está correta e tente de novo.\n${COLORS.RESET}`,
       );
 
+      
+
       // O loop continua, ele vai perguntar de novo
     }
   }

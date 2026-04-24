@@ -30,12 +30,22 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
   }
 
   const orgs = await orgsRes.json();
-  const targetOrg = orgs.find((org: any) =>
+
+  // Prioridade para plano PRO
+  let targetOrg = orgs.find((org: any) =>
     org.capabilities.includes("claude_pro"),
   );
+  // Segunda opção: plano gratuito ('chat')
+  if (!targetOrg) {
+    targetOrg = orgs.find((org: any) => org.capabilities.includes("chat"));
+  }
+  // Fallback: Se tudo falhar pega a primeira da lista
+  if (!targetOrg && orgs.length > 0) {
+    targetOrg = orgs[0];
+  }
 
   if (!targetOrg) {
-    throw new Error("Organização 'claude_pro' não encontrada.");
+    throw new Error("Nenhuma organização válida encontrada na Anthropic.");
   }
 
   // ------- Busca USAGE -------
