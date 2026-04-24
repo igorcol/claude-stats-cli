@@ -8,6 +8,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ### Added:
+- **Flag `--guide` (ou `-g`) para instrução sobre os dados exibidos do scan.**
 - **Flag `--reset` (ou `-r`) para limpar a session key e arquivos de config.**
 
 
