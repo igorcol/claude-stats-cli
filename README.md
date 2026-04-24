@@ -1,5 +1,4 @@
 # ⚡ CLAUDE OPERATIONAL HUD
-![Version](https://img.shields.io/badge/version-1.0.0--beta.3-magenta?style=for-the-badge)
 [![Changelog](https://img.shields.io/badge/What's_New%3F-Click_Here-00f2ff?style=for-the-badge)](./CHANGELOG.md)
 
 > Pare de ser um passageiro dos limites da Anthropic e assuma o controle do seu combustível de produtividade.
