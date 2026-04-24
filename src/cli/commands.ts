@@ -36,15 +36,31 @@ export const COMMANDS: CliCommand[] = [
       );
       console.log(`${COLORS.GRAY}Uso: stats [flags]${COLORS.RESET}\n`);
 
-      console.log(`${COLORS.WHITE_BOLD}COMANDOS DISPONÍVEIS:${COLORS.RESET}`);
-
+      // --- COMANDOS DE SISTEMA ---
+      console.log(`${COLORS.WHITE_BOLD}SISTEMA / CONFIGURAÇÃO:${COLORS.RESET}`);
       COMMANDS.forEach((cmd) => {
-        // Alinhamento manual: garante que as flags ocupem 20 espaços
-        const flagsStr = cmd.flags.join(" ou ");
-        const padding = " ".repeat(Math.max(0, 20 - flagsStr.length));
+        if (cmd.flags.includes("--help")) return; // Não exibe o --help
 
+        const flagsStr = cmd.flags.join(" ou ");
+        const padding = " ".repeat(Math.max(0, 22 - flagsStr.length));
         console.log(
           `  ${COLORS.YELLOW}${flagsStr}${COLORS.RESET}${padding}${COLORS.GRAY}${cmd.description}${COLORS.RESET}`,
+        );
+      });
+
+      // --- FLAGS DE OPERAÇÃO (Modificadores do HUD) ---
+      console.log(`\n${COLORS.WHITE_BOLD}MODIFICADORES DE EXECUÇÃO:${COLORS.RESET}`);
+      
+      const opFlags = [
+        { f: "-o ou --once", d: "Executa um scan único e encerra o processo." },
+        { f: "--json",     d: "Retorna o payload enriquecido em formato JSON." },
+        //TODO: { f: "-c ou --compact",  d: "Renderiza o HUD em modo minimalista (BETA.4)." },
+      ];
+
+      opFlags.forEach(flag => {
+        const padding = " ".repeat(Math.max(0, 22 - flag.f.length));
+        console.log(
+          `  ${COLORS.CYAN}${flag.f}${COLORS.RESET}${padding}${COLORS.GRAY}${flag.d}${COLORS.RESET}`
         );
       });
 

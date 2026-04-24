@@ -76,6 +76,7 @@ O HUD utiliza um motor de triagem de comandos profissional para garantir que voc
 | Comando | Descrição |
 | :--- | :--- |
 | `stats` | Inicia a telemetria em tempo real (Loop de 60s). |
+| `stats --json` | Exibe as metricas em json. |
 | `stats --once` | Realiza um scan único e encerra. |
 | `stats --guide` | Explica o que significa cada métrica exibida. |
 | `stats --changelog`| Exibe as novidades da versão atual. |
