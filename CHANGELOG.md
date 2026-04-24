@@ -5,6 +5,16 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-beta.3.2]
+
+### Fixed:
+- **HOTFIX: Comando de update errado corrigido**
+
+## [1.0.0-beta.3.1]
+
+### Changed:
+- **README.md oficial com guias de instalação e uso.**
+
 ## [1.0.0-beta.3]
 
 ### Added:
