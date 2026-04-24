@@ -11,6 +11,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Flag `--guide` (ou `-g`) para instrução sobre os dados exibidos do scan.**
 - **Flag `--changelog` (ou `-c`) exibe as alterações da versão instalada.**
 - **Flag `--reset` (ou `-r`) para limpar a session key e arquivos de config.**
+- **Flag `--update` (ou `-u`) para verificar se há atualizações pendentes.**
 - **Update Log** - mostra o changelog da versão atual após uma atualização.
 
 

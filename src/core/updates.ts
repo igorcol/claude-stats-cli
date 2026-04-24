@@ -6,7 +6,7 @@ const REMOTE_PKG_URL = "https://raw.githubusercontent.com/igorcol/claude-stats-c
 export async function checkForUpdates(): Promise<string | null> {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1500);
+    const timeout = setTimeout(() => controller.abort(), 1500).unref();
 
     // Adiciona um timestamp para burlar o cache do GitHub
     const response = await fetch(`${REMOTE_PKG_URL}?t=${Date.now()}`, { 
@@ -26,7 +26,8 @@ export async function checkForUpdates(): Promise<string | null> {
     }
 
     return null;
-  } catch {
+  } 
+  catch {
     return null;
   }
 }
