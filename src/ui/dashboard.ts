@@ -19,7 +19,7 @@ export function renderHUD(usage: ClaudeUsage, newVersion: string | null = null):
   // Banner de Update (se houver nova versão)
   if (newVersion) {
     console.log(` ${COLORS.BG_MAGENTA}${COLORS.BLACK}${COLORS.BOLD} ✨ UPDATE DISPONÍVEL: v${newVersion} ${COLORS.RESET}`);
-    console.log(` ${COLORS.MAGENTA}└─> Rode: npm install -g @seu-user/claude-stats${COLORS.RESET}\n`);
+    console.log(` ${COLORS.MAGENTA}└─> Rode: npm install -g @seu-user/claude-stats@latest${COLORS.RESET}\n`);
   }
 
   console.log(UI_COMPONENTS.header(`CLAUDE OPERATIONAL TELEMETRY v${APP_VERSION}`, isOverburn));
