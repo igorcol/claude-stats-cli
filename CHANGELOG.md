@@ -10,7 +10,8 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## Changed:
 - **Flag --reset alterada para --logout**
 
-
+## Added:
+- **Flag --json** loga as métricas em json. (sem loop).
 
 ## [1.0.0-beta.3.3] 
 
