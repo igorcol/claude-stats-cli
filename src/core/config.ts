@@ -2,12 +2,19 @@
 import path from "path";
 import os from "os";
 import fs from "fs";
-import { runWizard, Config } from "../ui/wizard";
+import { runWizard } from "../ui/wizard"; 
 import { COLORS } from "../utils/theme";
 
 export const CONFIG_PATH = path.join(os.homedir(), ".claude_stats_config.json");
 
+// A planta da casa agora mora aqui
+export interface Config {
+  sessionKey: string;
+  last_seen_version?: string; 
+}
+
 export async function forceSetup(): Promise<Config> {
+  // Passamos o CONFIG_PATH para o wizard salvar lá
   return await runWizard(CONFIG_PATH);
 }
 
@@ -17,6 +24,15 @@ export async function loadConfig(): Promise<Config> {
   }
   const fileContent = fs.readFileSync(CONFIG_PATH, "utf-8");
   return JSON.parse(fileContent);
+}
+
+// Função essencial para atualizar a versão sem o Wizard
+export function saveConfig(config: Config) {
+  try {
+    fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+  } catch (error) {
+    console.error(`${COLORS.RED}Erro ao salvar configuração:${COLORS.RESET}`, error);
+  }
 }
 
 export function resetConfig() {

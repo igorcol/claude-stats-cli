@@ -3,10 +3,8 @@ import fs from "fs";
 import readline from "readline/promises";
 import { COLORS } from "../utils/theme";
 import { getClaudeUsage } from "../core/api"; 
+import { Config } from "../core/config";
 
-export interface Config {
-  sessionKey: string;
-}
 
 export async function runWizard(configPath: string): Promise<Config> {
   const rl = readline.createInterface({
