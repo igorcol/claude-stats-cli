@@ -18,7 +18,7 @@ export const COMMANDS: CliCommand[] = [
     flags: ["-r", "--reset"],
     description: "Remove o arquivo de configuração atual",
     exitAfterExecution: true,
-    action: () => console.log('ResetConfig not implemented.') //resetConfig(),
+    action: () => resetConfig(),
   },
 
   //* --HELP
@@ -27,7 +27,7 @@ export const COMMANDS: CliCommand[] = [
     description: "Exibe esta tela de ajuda",
     exitAfterExecution: true,
     action: () => {
-      // O help agora pode ser gerado automaticamente lendo este mesmo array!
+      // O help é gerado automaticamente lendo este mesmo array
       console.log(
         `${COLORS.BOLD}${COLORS.CYAN} CLAUDE STATS - HELP ${COLORS.RESET}\n`,
       );

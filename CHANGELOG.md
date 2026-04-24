@@ -5,6 +5,12 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added:
+- **Flag `--reset` (ou `-r`) para limpar a session key e arquivos de config.**
+
+
 ## [1.0.0-beta.1] - 2026-04-23
 
 ### Added
