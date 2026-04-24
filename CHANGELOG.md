@@ -9,10 +9,11 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added:
 - **Flag `--guide` (ou `-g`) para instrução sobre os dados exibidos do scan.**
+- **Flag `--changelog` (ou `-c`) exibe as alterações da versão instalada.**
 - **Flag `--reset` (ou `-r`) para limpar a session key e arquivos de config.**
 
 
-## [1.0.0-beta.1] - 2026-04-23
+## [1.0.0-beta.2] - 2026-04-23
 
 ### Added
 - **Core Engine:** Migração total do motor de .bat/.ps1 para TypeScript, garantindo maior estabilidade e tipagem estática.

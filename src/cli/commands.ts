@@ -2,6 +2,7 @@
 import { CliCommand } from "./types";
 import { APP_VERSION, COLORS } from "../utils/theme";
 import { forceSetup, resetConfig } from "../core/config";
+import { getLatestChangelog } from "../core/changelog";
 
 export const COMMANDS: CliCommand[] = [
   // * --VERSION
@@ -72,13 +73,29 @@ export const COMMANDS: CliCommand[] = [
     },
   },
 
-  // * -- SETUP
+  // * --SETUP
   {
     flags: ["-s", "--setup"], // ? SE TODAS TEM - ou --, não posso só deixar aqui com ["s", "setup"] ??
     description: "Força a reconfiguração da sessionKey",
     exitAfterExecution: false,
     action: async () => {
       await forceSetup();
+    },
+  },
+
+  // * --CHANGELOG
+  {
+    flags: ["-c", "--changelog"],
+    description: "Exibe as novidades da versão instalada",
+    exitAfterExecution: true,
+    action: () => {
+      const news = getLatestChangelog();
+      
+      console.log(`\n ${COLORS.BG_CYAN}${COLORS.BLACK}${COLORS.BOLD} WHAT'S NEW IN v${APP_VERSION} ${COLORS.RESET}`);
+      console.log(` ${COLORS.GRAY}Ver histórico completo em: github.com/igorcol/claude-stats-cli${COLORS.RESET}\n`);
+      
+      console.log(news || `${COLORS.GRAY}Nenhuma informação disponível.${COLORS.RESET}`);
+      console.log(`\n${COLORS.CYAN}──────────────────────────────────────────────────────────────────${COLORS.RESET}\n`);
     },
   },
 ];
