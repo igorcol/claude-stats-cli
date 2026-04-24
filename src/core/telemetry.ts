@@ -11,9 +11,10 @@ const REFRESH_INTERVAL = 60 * 1000;
 
 interface ScanOptions {
   isJson?: boolean;
+  isCompact?: boolean;
 }
 
-export async function startTelemetry(initialKey: string) {
+export async function startTelemetry(initialKey: string, options: ScanOptions = {}) {
   let currentKey = initialKey;
   let updateAvailable: string | null = null;
 
@@ -29,7 +30,7 @@ export async function startTelemetry(initialKey: string) {
 
       // Passa pela Inteligência antes do Dashboard
       const enrichedPayload = enrichUsageData(rawUsage);
-      renderHUD(enrichedPayload, updateAvailable);
+      renderHUD(enrichedPayload, updateAvailable, options.isCompact);;
 
       const now = new Date().toLocaleTimeString("pt-BR");
       console.log(`\n ${COLORS.GRAY}Ultima atualização: ${now} (Próxima em ${REFRESH_INTERVAL / 1000}s)${COLORS.RESET}`);
@@ -101,7 +102,7 @@ export async function runSingleScan(sessionKey: string, options: ScanOptions = {
     }
 
     // Modo Operador: Pinta a tela
-    renderHUD(enrichedPayload);
+    renderHUD(enrichedPayload, null, options.isCompact);
     console.log(`\n ${COLORS.GRAY}Scan único finalizado.${COLORS.RESET}\n`);
 
   } catch (error) {

@@ -41,27 +41,36 @@ async function bootstrap() {
 
       if (news) {
         console.clear();
-        console.log(`\n ${COLORS.BG_CYAN}${COLORS.BLACK}${COLORS.BOLD} NEW VERSION DETECTED: v${APP_VERSION} ${COLORS.RESET}`);
+        console.log(
+          `\n ${COLORS.BG_CYAN}${COLORS.BLACK}${COLORS.BOLD} NEW VERSION DETECTED: v${APP_VERSION} ${COLORS.RESET}`,
+        );
         console.log(news);
-        console.log(`\n${COLORS.CYAN}──────────────────────────────────────────────────────────────────${COLORS.RESET}`);
-        console.log(`${COLORS.GRAY}Iniciando telemetria em 3 segundos...${COLORS.RESET}\n`);
+        console.log(
+          `\n${COLORS.CYAN}──────────────────────────────────────────────────────────────────${COLORS.RESET}`,
+        );
+        console.log(
+          `${COLORS.GRAY}Iniciando telemetria em 3 segundos...${COLORS.RESET}\n`,
+        );
 
         // Atualiza a config para marcar que ele já viu esta versão
         saveConfig({ ...config, last_seen_version: APP_VERSION });
 
         // Pequena pausa para leitura antes do Dashboard limpar a tela
-        await new Promise(resolve => setTimeout(resolve, 3500));
+        await new Promise((resolve) => setTimeout(resolve, 3500));
       }
     }
 
-    const isOnce = process.argv.includes("--once") || process.argv.includes("-o");
+    const isOnce =
+      process.argv.includes("--once") || process.argv.includes("-o");
     const isJson = process.argv.includes("--json");
+    const isCompact = process.argv.includes("--compact");
+
     const runOnce = isOnce || isJson;
 
     if (runOnce) {
-      await runSingleScan(config.sessionKey, { isJson });
+      await runSingleScan(config.sessionKey, { isJson, isCompact });
     } else {
-      await startTelemetry(config.sessionKey);
+      await startTelemetry(config.sessionKey, { isCompact });
     }
   } catch (error) {
     process.exit(1);

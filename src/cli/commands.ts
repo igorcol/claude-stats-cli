@@ -54,7 +54,7 @@ export const COMMANDS: CliCommand[] = [
       const opFlags = [
         { f: "-o ou --once", d: "Executa um scan único e encerra o processo." },
         { f: "--json",     d: "Retorna o payload enriquecido em formato JSON." },
-        //TODO: { f: "-c ou --compact",  d: "Renderiza o HUD em modo minimalista (BETA.4)." },
+        { f: "-c ou --compact",  d: "Renderiza o HUD em modo minimalista (BETA.4)." },
       ];
 
       opFlags.forEach(flag => {
