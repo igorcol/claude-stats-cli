@@ -12,6 +12,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Added:
 - **Flag --json** loga as métricas em json. (sem loop).
+- **Flag --compact**
 
 ## [1.0.0-beta.3.3] 
 
