@@ -5,6 +5,11 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+## Added:
+- **Busca dinamica por organização** - Antes lia apenas plano pro, agora inclui plano gratuito.
+
+
 ## [1.0.0-beta.3.2]
 
 ### Fixed:

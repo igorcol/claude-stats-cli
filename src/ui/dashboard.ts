@@ -22,7 +22,15 @@ export function renderHUD(usage: ClaudeUsage, newVersion: string | null = null):
     console.log(` ${COLORS.MAGENTA}└─> Rode: npm i -g @igorcol/claude-stats@latest${COLORS.RESET}\n`);
   }
 
-  console.log(UI_COMPONENTS.header(`CLAUDE OPERATIONAL TELEMETRY v${APP_VERSION}`, isOverburn));
+  console.log(
+    UI_COMPONENTS.header(
+      "CLAUDE OPERATIONAL HUD", 
+      APP_VERSION, 
+      usage.account_alias, 
+      usage.plan_tier, 
+      isOverburn
+    )
+  );
   
   console.log(` ${UI_COMPONENTS.subLabel(`Modo: ${isOverburn ? "HIGH RISK / OVERBURN" : "OPTIMAL / STABLE"}`)}\n`);
 

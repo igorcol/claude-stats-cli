@@ -7,6 +7,8 @@ export interface UsageWindow {
 export interface ClaudeUsage {
   five_hour: UsageWindow;
   seven_day: UsageWindow;
+  account_alias: string;
+  plan_tier: "PRO" | "FREE";
 }
 
 export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
@@ -48,6 +50,14 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
     throw new Error("Nenhuma organização válida encontrada na Anthropic.");
   }
 
+  // ------- Tratamento de Metadados -------
+  const isPro = targetOrg.capabilities.includes("claude_pro");
+  const planTier = isPro ? "PRO" : "FREE";
+
+  // Transforma "nome@gmail.com's Organization" em "nome"
+  const rawName = targetOrg.name || "";
+  const accountAlias = rawName.split("@")[0] || "operator";
+
   // ------- Busca USAGE -------
   const usageRes = await fetch(
     `https://claude.ai/api/organizations/${targetOrg.uuid}/usage`,
@@ -58,6 +68,14 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
     throw new Error(`Falha no Usage. Status: ${usageRes.status}`);
   }
 
-  return (await usageRes.json()) as ClaudeUsage;
+  const usageData = await usageRes.json();
+
+  const payload = {
+    ...usageData,
+    account_alias: accountAlias,
+    plan_tier: planTier,
+  } as ClaudeUsage;
+
+  return payload
   // try/catch removido para que o erro suba para o Setup ou Index.
 }
