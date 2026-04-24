@@ -5,9 +5,13 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-## Added:
-- **Busca dinamica por organização** - Antes lia apenas plano pro, agora inclui plano gratuito.
+## [1.0.0-beta.3.3] 
+
+### Fixed:
+- **Universal Auth:** A autenticação agora identifica dinamicamente as organizações. Isso resolve o erro de acesso para contas gratuitas, tornando a ferramenta 100% compatível com usuários dos planos **Free** e **Pro**.
+
+### Added:
+- **New Metadata:** O cabeçalho do HUD foi atualizado e agora exibe em tempo real o nome da conta licença detectada (`PRO` ou `FREE`).
 
 
 ## [1.0.0-beta.3.2]
