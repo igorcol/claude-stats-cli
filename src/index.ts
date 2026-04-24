@@ -54,8 +54,12 @@ async function bootstrap() {
       }
     }
 
-    if (process.argv.includes("--once") || process.argv.includes("-o")) {
-      await runSingleScan(config.sessionKey);
+    const isOnce = process.argv.includes("--once") || process.argv.includes("-o");
+    const isJson = process.argv.includes("--json");
+    const runOnce = isOnce || isJson;
+
+    if (runOnce) {
+      await runSingleScan(config.sessionKey, { isJson });
     } else {
       await startTelemetry(config.sessionKey);
     }

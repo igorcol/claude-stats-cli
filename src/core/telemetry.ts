@@ -2,11 +2,16 @@
 import { getClaudeUsage } from "./api";
 import { renderHUD } from "../ui/dashboard";
 import { COLORS } from "../utils/theme";
-import { forceSetup } from "./config"; // Precisamos disso para o auto-recovery
+import { forceSetup } from "./config"; 
 import readline from "readline/promises";
 import { checkForUpdates } from "./updates";
+import { enrichUsageData } from "./metrics";
 
 const REFRESH_INTERVAL = 60 * 1000;
+
+interface ScanOptions {
+  isJson?: boolean;
+}
 
 export async function startTelemetry(initialKey: string) {
   let currentKey = initialKey;
@@ -20,8 +25,11 @@ export async function startTelemetry(initialKey: string) {
 
   while (true) {
     try {
-      const usage = await getClaudeUsage(currentKey);
-      renderHUD(usage, updateAvailable);
+      const rawUsage = await getClaudeUsage(currentKey);
+
+      // Passa pela Inteligência antes do Dashboard
+      const enrichedPayload = enrichUsageData(rawUsage);
+      renderHUD(enrichedPayload, updateAvailable);
 
       const now = new Date().toLocaleTimeString("pt-BR");
       console.log(`\n ${COLORS.GRAY}Ultima atualização: ${now} (Próxima em ${REFRESH_INTERVAL / 1000}s)${COLORS.RESET}`);
@@ -80,13 +88,29 @@ async function handleExpiredSession(): Promise<string | null> {
   return null;
 }
 
-export async function runSingleScan(sessionKey: string) {
+export async function runSingleScan(sessionKey: string, options: ScanOptions = {}) {
   try {
-    const usage = await getClaudeUsage(sessionKey);
-    renderHUD(usage);
+    const rawUsage = await getClaudeUsage(sessionKey);
+    const enrichedPayload = enrichUsageData(rawUsage);
+
+    // 🔀 A ENCRUZILHADA
+    if (options.isJson) {
+      // Modo Máquina: Cospe apenas o JSON e sai silenciosamente.
+      console.log(JSON.stringify(enrichedPayload, null, 2));
+      process.exit(0);
+    }
+
+    // Modo Operador: Pinta a tela
+    renderHUD(enrichedPayload);
     console.log(`\n ${COLORS.GRAY}Scan único finalizado.${COLORS.RESET}\n`);
+
   } catch (error) {
-    console.error(`\n ${COLORS.RED}[!] Erro no scan único: ${error instanceof Error ? error.message : error}${COLORS.RESET}`);
+    if (options.isJson) {
+       // No modo JSON, os erros também devem sair em JSON para não quebrar a automação
+       console.log(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown Error" }));
+    } else {
+       console.error(`\n ${COLORS.RED}[!] Erro no scan único: ${error instanceof Error ? error.message : error}${COLORS.RESET}`);
+    }
     process.exit(1);
   }
 }
