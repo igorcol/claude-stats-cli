@@ -7,8 +7,7 @@
     "stats": "./dist/index.js"
   },
   "scripts": {
-    "reset": "node -e \"const fs = require('fs'); const path = require('path'); const os = require('os'); const p = path.join(os.homedir(), '.claude_stats_config.json'); if (fs.existsSync(p)) { fs.unlinkSync(p); console.log('🗑️ Config deletada!'); } else { console.log('❓ Config não encontrada.'); }\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx ts-node src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build",

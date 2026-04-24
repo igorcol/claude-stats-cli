@@ -1,7 +1,7 @@
 // src/cli/commands.ts
 import { CliCommand } from "./types";
 import { APP_VERSION, COLORS } from "../utils/theme";
-import { forceSetup } from "../core/config";
+import { forceSetup, resetConfig } from "../core/config";
 
 export const COMMANDS: CliCommand[] = [
   // * --VERSION
