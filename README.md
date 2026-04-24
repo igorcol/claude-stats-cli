@@ -81,7 +81,7 @@ O HUD utiliza um motor de triagem de comandos profissional para garantir que voc
 | `stats --changelog`| Exibe as novidades da versão atual. |
 | `stats --update` | Verifica manualmente se há novos updates. |
 | `stats --setup` | Força a reconfiguração da chave de acesso. |
-| `stats --reset` | Destrói as configurações e limpa o sistema. |
+| `stats --logout` | Destrói as configurações e limpa o sistema. |
 | `stats --help` | Exibe o mapa de comandos. |
 
 ---

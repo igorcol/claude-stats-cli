@@ -17,9 +17,9 @@ export const COMMANDS: CliCommand[] = [
       ),
   },
 
-  // * --RESET
+  // * --LOGOUT
   {
-    flags: ["-r", "--reset"],
+    flags: ["-l", "--logout"],
     description: "Remove o arquivo de configuração atual",
     exitAfterExecution: true,
     action: () => resetConfig(),
