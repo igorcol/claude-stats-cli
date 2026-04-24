@@ -61,33 +61,46 @@ export const COMMANDS: CliCommand[] = [
     exitAfterExecution: true,
     action: () => {
       console.log(
-        `\n${COLORS.BG_MAGENTA}${COLORS.WHITE_BOLD} OPERATIONAL GUIDE ${COLORS.RESET}\n`,
+        `\n${COLORS.BG_CYAN}${COLORS.BLACK}${COLORS.BOLD} CLAUDE STATS ${APP_VERSION}  ${COLORS.RESET}`,
       );
-
-      console.log(`${COLORS.CYAN_BOLD}📊 COT (Daily Limit):${COLORS.RESET}`);
       console.log(
-        `${COLORS.GRAY}   O limite total de tokens/mensagens que a Anthropic permite no seu dia.${COLORS.RESET}\n`,
+        `\n${COLORS.BG_MAGENTA}${COLORS.WHITE_BOLD} OPERATIONAL GUIDE ${COLORS.RESET}\n`,
       );
 
       console.log(`${COLORS.CYAN_BOLD}🔄 SESSÃO (5H):${COLORS.RESET}`);
       console.log(
-        `${COLORS.GRAY}   Janela móvel de uso. O HUD monitora o consumo dentro deste ciclo.${COLORS.RESET}\n`,
+        `${COLORS.GRAY}   Barra de uso da janela móvel (sessão de 5h). (Padrão exibido pelo claude).${COLORS.RESET}\n`,
       );
 
-      console.log(`${COLORS.CYAN_BOLD}📈 RITMO (Pace):${COLORS.RESET}`);
+      console.log(`${COLORS.CYAN_BOLD}📊 COT (Daily Limit):${COLORS.RESET}`);
       console.log(
-        `${COLORS.GRAY}   Diferença entre seu uso real e o uso ideal. Se o ritmo estiver "STABLE",${COLORS.RESET}`,
+        `${COLORS.GRAY}   Limite não restrito do dia. (100% da semana distribuido durante os 7 dias da semana = 14.3% ao dia.)${COLORS.RESET}`,
       );
       console.log(
-        `${COLORS.GRAY}   você terminará o dia com folga. Se estiver em "AGGRESSIVE", corre risco de bloqueio.${COLORS.RESET}\n`,
+        `${COLORS.GRAY}       - Usado para limitar seu uso diario para que a cota semanal dure os 7 dias.${COLORS.RESET}\n`,
       );
 
-      console.log(`${COLORS.CYAN_BOLD}🧪 SAÚDE DO CICLO:${COLORS.RESET}`);
       console.log(
-        `${COLORS.GRAY}   Métrica ponderada que avalia se você está desperdiçando tokens em prompts curtos${COLORS.RESET}`,
+        `${COLORS.CYAN_BOLD}📅  TOTAL W (Weekly Limit):${COLORS.RESET}`,
       );
       console.log(
-        `${COLORS.GRAY}   ou se está otimizando a capacidade da IA.${COLORS.RESET}\n`,
+        `${COLORS.GRAY}   Barra de uso semanal. (Padrão exibido pelo claude).${COLORS.RESET}\n`,
+      );
+
+      console.log(`${COLORS.CYAN_BOLD}📈 RITMO (P ou Pace):${COLORS.RESET}`);
+      console.log(
+        `${COLORS.GRAY}   Soma da cota diaria do dia do reset semanal até o dia atual (14.3% ao dia),${COLORS.RESET}\n`,
+      );
+
+      console.log(`${COLORS.CYAN_BOLD}🧪 OUTROS:${COLORS.RESET}`);
+      console.log(
+        `${COLORS.GRAY}   IDEAL: Teto diario (14.3% ao dia) ${COLORS.RESET}`,
+      );
+      console.log(
+        `${COLORS.GRAY}   REAL: Seu limite semanal padrão. ${COLORS.RESET}`,
+      );
+      console.log(
+        `${COLORS.GRAY}   FOLGA: Diferença entre seu limite semanal atual X o teto ideal para hoje. ${COLORS.RESET}\n`,
       );
 
       console.log(
