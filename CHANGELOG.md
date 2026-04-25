@@ -13,7 +13,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Added:
 - **Flag --json** loga as métricas em json. (sem loop).
-- **Flag --compact**
+- **Flag --compact** mostra o dashboard de modo compacto
 
 ## Fixed:
 - **Atalho -c do chancelog conflitava com atalho do compact -c** - Changelog alterado para -cl e Compact continua como -c.
