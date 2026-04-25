@@ -63,7 +63,7 @@ async function bootstrap() {
     const isOnce =
       process.argv.includes("--once") || process.argv.includes("-o");
     const isJson = process.argv.includes("--json");
-    const isCompact = process.argv.includes("--compact");
+    const isCompact = process.argv.includes("--compact") || process.argv.includes("-c");
 
     const runOnce = isOnce || isJson;
 

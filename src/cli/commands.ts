@@ -137,7 +137,7 @@ export const COMMANDS: CliCommand[] = [
 
   // * --CHANGELOG
   {
-    flags: ["-c", "--changelog"],
+    flags: ["-cl", "--changelog"],
     description: "Exibe as novidades da versão instalada",
     exitAfterExecution: true,
     action: () => {
