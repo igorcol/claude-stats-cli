@@ -11,6 +11,9 @@ export const CONFIG_PATH = path.join(os.homedir(), ".claude_stats_config.json");
 export interface Config {
   sessionKey: string;
   last_seen_version?: string; 
+  organizationId?: string;
+  account_alias?: string;
+  plan_tier?: "PRO" | "FREE";
 }
 
 export async function forceSetup(): Promise<Config> {

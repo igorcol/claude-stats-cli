@@ -1,4 +1,5 @@
-// src/api.ts
+// src/core/api.ts
+
 export interface UsageWindow {
   utilization: number;
   resets_at: string;
@@ -9,9 +10,18 @@ export interface ClaudeUsage {
   seven_day: UsageWindow;
   account_alias: string;
   plan_tier: "PRO" | "FREE";
+  organization_id: string; // Novo campo para persistência
 }
 
-export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
+/**
+ * Busca os dados de utilização na Anthropic.
+ * @param sessionKey Chave de sessão do usuário.
+ * @param cachedOrg Objeto opcional contendo dados já salvos no .cfg para evitar requisições extras.
+ */
+export async function getClaudeUsage(
+  sessionKey: string,
+  cachedOrg?: { id: string; alias: string; tier: "PRO" | "FREE" }
+): Promise<ClaudeUsage> {
   const headers = {
     Cookie: `sessionKey=${sessionKey}`,
     "User-Agent":
@@ -21,46 +31,47 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
     Origin: "https://claude.ai",
   };
 
-  // ------- Busca a Org ID -------
-  const orgsRes = await fetch("https://claude.ai/api/organizations", {
-    headers,
-  });
+  let orgId = cachedOrg?.id;
+  let accountAlias = cachedOrg?.alias;
+  let planTier = cachedOrg?.tier;
 
-  if (!orgsRes.ok) {
-    // Mensagem padronizada para o Telemetry
-    throw new Error(`AUTH_EXPIRED:${orgsRes.status}`);
+  // ------- Lógica de Orquestração (Cache vs Network) -------
+  
+  // Se não temos o ID no cache, precisamos descobrir quem é o usuário
+  if (!orgId || !accountAlias || !planTier) {
+    const orgsRes = await fetch("https://claude.ai/api/organizations", {
+      headers,
+    });
+
+    if (!orgsRes.ok) {
+      throw new Error(`AUTH_EXPIRED:${orgsRes.status}`);
+    }
+
+    const orgs = await orgsRes.json();
+
+    // Priorização de Organização: PRO > FREE > FIRST
+    let targetOrg = orgs.find((org: any) =>
+      org.capabilities.includes("claude_pro"),
+    );
+    if (!targetOrg) {
+      targetOrg = orgs.find((org: any) => org.capabilities.includes("chat"));
+    }
+    if (!targetOrg && orgs.length > 0) {
+      targetOrg = orgs[0];
+    }
+
+    if (!targetOrg) {
+      throw new Error("Nenhuma organização válida encontrada na Anthropic.");
+    }
+
+    orgId = targetOrg.uuid;
+    planTier = targetOrg.capabilities.includes("claude_pro") ? "PRO" : "FREE";
+    accountAlias = (targetOrg.name || "").split("@")[0] || "operator";
   }
 
-  const orgs = await orgsRes.json();
-
-  // Prioridade para plano PRO
-  let targetOrg = orgs.find((org: any) =>
-    org.capabilities.includes("claude_pro"),
-  );
-  // Segunda opção: plano gratuito ('chat')
-  if (!targetOrg) {
-    targetOrg = orgs.find((org: any) => org.capabilities.includes("chat"));
-  }
-  // Fallback: Se tudo falhar pega a primeira da lista
-  if (!targetOrg && orgs.length > 0) {
-    targetOrg = orgs[0];
-  }
-
-  if (!targetOrg) {
-    throw new Error("Nenhuma organização válida encontrada na Anthropic.");
-  }
-
-  // ------- Tratamento de Metadados -------
-  const isPro = targetOrg.capabilities.includes("claude_pro");
-  const planTier = isPro ? "PRO" : "FREE";
-
-  // Transforma "nome@gmail.com's Organization" em "nome"
-  const rawName = targetOrg.name || "";
-  const accountAlias = rawName.split("@")[0] || "operator";
-
-  // ------- Busca USAGE -------
+  // ------- Busca de Utilização Real -------
   const usageRes = await fetch(
-    `https://claude.ai/api/organizations/${targetOrg.uuid}/usage`,
+    `https://claude.ai/api/organizations/${orgId}/usage`,
     { headers },
   );
 
@@ -70,12 +81,10 @@ export async function getClaudeUsage(sessionKey: string): Promise<ClaudeUsage> {
 
   const usageData = await usageRes.json();
 
-  const payload = {
+  return {
     ...usageData,
     account_alias: accountAlias,
     plan_tier: planTier,
+    organization_id: orgId,
   } as ClaudeUsage;
-
-  return payload
-  // try/catch removido para que o erro suba para o Setup ou Index.
 }

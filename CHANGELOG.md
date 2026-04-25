@@ -9,6 +9,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Changed:
 - **Flag --reset alterada para --logout**
+- **.claude_stats_config.json** - agora salva o nome, tier, sessionId e organizationId na hora do setup
 
 ## Added:
 - **Flag --json** loga as métricas em json. (sem loop).
