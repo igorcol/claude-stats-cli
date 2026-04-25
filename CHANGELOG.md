@@ -15,6 +15,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Flag --json** loga as métricas em json. (sem loop).
 - **Flag --compact**
 
+## Fixed:
+- **Atalho -c do chancelog conflitava com atalho do compact -c** - Changelog alterado para -cl e Compact continua como -c.
+
+
 ## [1.0.0-beta.3.3] 
 
 ### Fixed:
