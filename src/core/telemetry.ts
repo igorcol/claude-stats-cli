@@ -9,9 +9,11 @@ import { enrichUsageData } from "./metrics";
 
 const REFRESH_INTERVAL = 60 * 1000;
 
-interface ScanOptions {
+// Atualizado para incluir a flag anônima
+export interface ScanOptions {
   isJson?: boolean;
   isCompact?: boolean;
+  isAnonymous?: boolean;
 }
 
 export async function startTelemetry(
@@ -60,7 +62,9 @@ export async function startTelemetry(
 
       // Passa pela Inteligência antes do Dashboard
       const enrichedPayload = enrichUsageData(rawUsage);
-      renderHUD(enrichedPayload, updateAvailable, options.isCompact);
+      
+      // Enviando o objeto de opções completo para o orquestrador visual
+      renderHUD(enrichedPayload, updateAvailable, options);
 
       const now = new Date().toLocaleTimeString("pt-BR");
       console.log(
@@ -151,7 +155,7 @@ export async function runSingleScan(
     }
 
     // Modo Operador: Pinta a tela
-    renderHUD(enrichedPayload, null, options.isCompact);
+    renderHUD(enrichedPayload, null, options);
     console.log(`\n ${COLORS.GRAY}Scan único finalizado.${COLORS.RESET}\n`);
   } catch (error) {
     if (options.isJson) {

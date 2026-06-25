@@ -60,17 +60,18 @@ async function bootstrap() {
       }
     }
 
-    const isOnce =
-      process.argv.includes("--once") || process.argv.includes("-o");
+    // --- CAPTURA DE MODIFICADORES DE EXECUÇÃO ---
+    const isOnce = process.argv.includes("--once") || process.argv.includes("-o");
     const isJson = process.argv.includes("--json");
     const isCompact = process.argv.includes("--compact") || process.argv.includes("-c");
+    const isAnonymous = process.argv.includes("--anonymous") || process.argv.includes("-a"); // <--- NOVA FLAG AQUI
 
     const runOnce = isOnce || isJson;
 
     if (runOnce) {
-      await runSingleScan(config.sessionKey, { isJson, isCompact });
+      await runSingleScan(config.sessionKey, { isJson, isCompact, isAnonymous });
     } else {
-      await startTelemetry(config.sessionKey, { isCompact });
+      await startTelemetry(config.sessionKey, { isCompact, isAnonymous });
     }
   } catch (error) {
     process.exit(1);

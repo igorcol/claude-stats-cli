@@ -4,30 +4,40 @@ import { APP_VERSION, COLORS, getStatusColor } from "../utils/theme";
 import { buildBar } from "../utils/formatters";
 import { UI_COMPONENTS } from "./components";
 
+// Interface local para manter o desacoplamento do telemetry.ts
+interface HUDOptions {
+  isCompact?: boolean;
+  isAnonymous?: boolean;
+}
+
 /**
  * PONTO DE ENTRADA ÚNICO: Orquestra qual versão do HUD será exibida.
  */
 export function renderHUD(
   usage: EnrichedUsage,
   newVersion: string | null = null,
-  isCompact: boolean = false // <--- Nova flag de controle
+  options: HUDOptions = {}
 ): void {
   // Limpamos o console em ambos os modos para manter o HUD fixo no topo
   console.clear();
 
-  if (isCompact) {
-    renderCompactView(usage);
+  if (options.isCompact) {
+    renderCompactView(usage, options.isAnonymous);
   } else {
-    renderFullView(usage, newVersion);
+    renderFullView(usage, newVersion, options.isAnonymous);
   }
 }
 
 /**
  * COMPONENTE: HUD COMPLETO (A versão agressiva/industrial padrão)
  */
-function renderFullView(usage: EnrichedUsage, newVersion: string | null): void {
+function renderFullView(usage: EnrichedUsage, newVersion: string | null, isAnonymous?: boolean): void {
   const { session, weekly, pace, analysis, account_alias, plan_tier } = usage;
   const isOverburn = analysis.is_overburn;
+
+  // --- MÁSCARA ANÔNIMA ---
+  const displayAlias = isAnonymous ? "OPERATOR" : account_alias;
+  const displayTier = isAnonymous ? "SECURE" : plan_tier;
 
   // Banner de Update
   if (newVersion) {
@@ -35,8 +45,8 @@ function renderFullView(usage: EnrichedUsage, newVersion: string | null): void {
     console.log(` ${COLORS.MAGENTA}└─> Rode: npm i -g @igorcol/claude-stats@latest${COLORS.RESET}\n`);
   }
 
-  // Header UI
-  console.log(UI_COMPONENTS.header("CLAUDE OPERATIONAL HUD", APP_VERSION, account_alias, plan_tier, isOverburn));
+  // Header UI (Agora usando os dados mascarados se aplicável)
+  console.log(UI_COMPONENTS.header("CLAUDE OPERATIONAL HUD", APP_VERSION, displayAlias, displayTier, isOverburn));
   console.log(` ${UI_COMPONENTS.subLabel(`Modo: ${isOverburn ? "HIGH RISK / OVERBURN" : "OPTIMAL / STABLE"}`)}\n`);
 
   // --- SEÇÃO: CARGA ATUAL ---
@@ -71,15 +81,20 @@ function renderFullView(usage: EnrichedUsage, newVersion: string | null): void {
 /**
  * COMPONENTE: HUD COMPACTO (A versão minimalista para monitoramento discreto)
  */
-function renderCompactView(usage: EnrichedUsage): void {
+function renderCompactView(usage: EnrichedUsage, isAnonymous?: boolean): void {
   const { session, weekly, pace, analysis, account_alias, plan_tier } = usage;
   
-  const tierColor = plan_tier === "PRO" ? COLORS.MAGENTA : COLORS.CYAN;
+  // --- MÁSCARA ANÔNIMA ---
+  const displayAlias = isAnonymous ? "OPERATOR" : account_alias;
+  const displayTier = isAnonymous ? "SECURE" : plan_tier;
+  // Se for anônimo, forçamos a cor cinza para a tag SECURE, senão mantém a lógica normal
+  const tierColor = isAnonymous ? COLORS.GRAY : (plan_tier === "PRO" ? COLORS.MAGENTA : COLORS.CYAN);
+  
   const statusIcon = analysis.is_overburn ? "🚨" : "💎";
   const paceStatus = analysis.is_overburn ? `${COLORS.RED}OVR${COLORS.RESET}` : `${COLORS.GREEN}STB${COLORS.RESET}`;
 
-  // Linha 1: Status Crítico em uma linha
-  console.log(`\n ${statusIcon} ${COLORS.CYAN}${COLORS.BOLD}CLAUDE HUD${COLORS.RESET} │ 👤 ${COLORS.WHITE_BOLD}${account_alias}${COLORS.RESET} (${tierColor}${plan_tier}${COLORS.RESET}) │ ${COLORS.GREEN}ONLINE${COLORS.RESET}`);
+  // Linha 1: Status Crítico em uma linha (Agora usando os dados mascarados)
+  console.log(`\n ${statusIcon} ${COLORS.CYAN}${COLORS.BOLD}CLAUDE HUD${COLORS.RESET} │ 👤 ${COLORS.WHITE_BOLD}${displayAlias}${COLORS.RESET} (${tierColor}${displayTier}${COLORS.RESET}) │ ${COLORS.GREEN}ONLINE${COLORS.RESET}`);
   
   // Linha 2: Métricas Compactas (Barras reduzidas para 12 caracteres)
   const sBar = buildBar(session.utilization, getStatusColor(session.utilization), 12);
