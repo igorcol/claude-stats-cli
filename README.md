@@ -76,14 +76,15 @@ O HUD utiliza um motor de triagem de comandos profissional para garantir que voc
 | Comando | Descrição |
 | :--- | :--- |
 | `stats` | Inicia a telemetria em tempo real (Loop de 60s). |
+| `stats --help` | Exibe o mapa de comandos. |
 | `stats --json` | Exibe as metricas em json. |
 | `stats --once` | Realiza um scan único e encerra. |
 | `stats --guide` | Explica o que significa cada métrica exibida. |
 | `stats --changelog`| Exibe as novidades da versão atual. |
+| `stats --anonymous` | Executa em modo anonimo. |
 | `stats --update` | Verifica manualmente se há novos updates. |
 | `stats --setup` | Força a reconfiguração da chave de acesso. |
 | `stats --logout` | Destrói as configurações e limpa o sistema. |
-| `stats --help` | Exibe o mapa de comandos. |
 
 ---
 
