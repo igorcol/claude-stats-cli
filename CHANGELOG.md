@@ -5,18 +5,21 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v1.0.0-beta.4] - 2026-06-24
 
-## Changed:
-- **Flag --reset alterada para --logout**
-- **.claude_stats_config.json** - agora salva o nome, tier, sessionId e organizationId na hora do setup
+### 🚀 Added
+- **Modo Integração (`--json`):** Saída de dados nativa e estruturada para integrações de terceiros (Obsidian, barras de status, scripts). Execução única (sem loop contínuo).
+- **Modo Compacto (`--compact` ou `-c`):** Versão minimalista do HUD, condensada em apenas duas linhas. Ideal para monitoramento passivo e economia de espaço em terminais menores.
+- **Modo Operador Anônimo (`--anonymous` ou `-a`):** Mascara o nome e o plano do usuário no HUD (exibindo `👤 OPERATOR │ SECURE`), perfeito para screenshots, gravações de tela e privacidade.
 
-## Added:
-- **Flag --json** loga as métricas em json. (sem loop).
-- **Flag --compact** mostra o dashboard de modo compacto
+### ⚡ Performance & Core
+- **Cache de Identidade (Org ID):** O arquivo de configuração (`.claude_stats_config.json`) agora salva o `organizationId`, `account_alias` e `plan_tier` após a primeira execução bem-sucedida. Isso elimina uma requisição HTTP redundante a cada volta do loop de telemetria, economizando banda e reduzindo drasticamente o risco de *rate-limit* na Anthropic.
 
-## Fixed:
-- **Atalho -c do chancelog conflitava com atalho do compact -c** - Changelog alterado para -cl e Compact continua como -c.
+### 🔄 Changed
+- **UX Semântica:** A flag `--reset` foi renomeada para `--logout`, alinhando a nomenclatura com a ação real de encerrar a sessão e limpar credenciais da máquina local.
+
+### 🐛 Fixed
+- **Colisão de Atalhos:** Resolvido o conflito entre flags na raiz. A flag `--compact` assume definitivamente o atalho `-c`, enquanto o changelog passa a responder pelo atalho `-cl` (ou `--changelog`).
 
 
 ## [1.0.0-beta.3.3] 
